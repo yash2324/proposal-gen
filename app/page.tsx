@@ -1,5 +1,4 @@
 import ProposalBtn from "@/components/ProposalBtn";
-import { Button } from "@/components/ui/button";
 import { authOptions } from "@/libs/AuthOptions";
 import { getServerSession } from "next-auth";
 import { redirect } from "next/navigation";
