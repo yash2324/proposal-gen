@@ -1,0 +1,60 @@
+// This is your Prisma schema file,
+// learn more about it in the docs: https://pris.ly/d/prisma-schema
+
+generator client {
+  provider = "prisma-client-js"
+}
+
+datasource db {
+  provider = "mongodb"
+  url      = env("DATABASE_URL")
+}
+
+model User{
+  id String @db.ObjectId @default(auto()) @map("_id") @id
+  email String
+  hashedPassword String
+  proposals      Proposals[]
+  companyInfo    CompanyInfo[]
+  createdAt DateTime @default(now())
+  updatedAt DateTime @updatedAt
+}
+model Proposals{
+  id    String @id @default(auto()) @map("_id") @db.ObjectId
+  title String
+  template String
+  content String?
+  createdAt DateTime @default(now())
+  updatedAt DateTime @updatedAt
+  userId String @db.ObjectId
+  user User @relation(fields: [userId], references: [id])
+}
+model CompanyInfo{
+  id    String @id @default(auto()) @map("_id") @db.ObjectId
+  name String
+  address String
+  phone String
+  email String
+  logo String?
+  Testimonials Testimonials[]
+  pricing Json?
+  projects Projects[]
+  website String
+  userId String @db.ObjectId
+  user User @relation(fields: [userId], references: [id])
+}
+model Testimonials{
+  id    String @id @default(auto()) @map("_id") @db.ObjectId
+  name String
+  content String
+  company String
+  companyInfoId String @db.ObjectId
+  companyInfo CompanyInfo @relation(fields: [companyInfoId], references: [id])
+}
+model Projects{
+  id    String @id @default(auto()) @map("_id") @db.ObjectId
+  name String
+  description String
+  companyInfoId String @db.ObjectId
+  companyInfo CompanyInfo @relation(fields: [companyInfoId], references: [id])
+}
