@@ -4,8 +4,8 @@ import Link from "next/link";
 
 export default function LoginPage() {
   return (
-    <div className="h-screen w-full flex items-center justify-center bg-gray-100">
-      <div className="">
+    <div className="max-h-screen min-h-screen w-full my-auto flex items-center justify-center ">
+      <div className="h-full my-auto">
         <LoginForm />
         <div className="text-sm text-center text-neutral-500 mt-5">
           Not have an accout?{" "}
