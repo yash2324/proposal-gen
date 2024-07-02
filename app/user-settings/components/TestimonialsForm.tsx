@@ -3,43 +3,25 @@ import { Label } from "@/components/ui/label";
 import { Input } from "@/components/ui/input";
 import { Textarea } from "@/components/ui/textarea";
 import { Button } from "@/components/ui/button";
+import useFormStore from "@/stores/formStore";
 
 const TestimonialsForm = () => {
-  const [testimonials, setTestimonials] = useState([
-    { id: Date.now(), name: "", content: "", company: "" },
-  ]);
-
-  const addTestimonial = () => {
-    setTestimonials([
-      ...testimonials,
-      { id: Date.now(), name: "", content: "", company: "" },
-    ]);
-  };
-
-  const handleInputChange = (
-    index: number,
-    event: React.ChangeEvent<HTMLInputElement | HTMLTextAreaElement>
-  ) => {
-    const updatedTestimonials = testimonials.map((testimonial, i) =>
-      i === index
-        ? { ...testimonial, [event.target.name]: event.target.value }
-        : testimonial
-    );
-    setTestimonials(updatedTestimonials);
-  };
+  const { testimonials, addTestimonial, updateTestimonial } = useFormStore();
 
   return (
-    <div className="space-y-4" id="testimonials">
+    <div id="testimonials" className="space-y-4">
       <h3 className="text-xl font-bold">Testimonials</h3>
       {testimonials.map((testimonial, index) => (
-        <div key={testimonial.id} className="space-y-2 ">
+        <div key={testimonial.id} className="space-y-2">
           <div>
             <Label htmlFor={`testimonial-name-${index}`}>Name</Label>
             <Input
               id={`testimonial-name-${index}`}
               name="name"
               value={testimonial.name}
-              onChange={(e) => handleInputChange(index, e)}
+              onChange={(e) =>
+                updateTestimonial(index, { name: e.target.value })
+              }
             />
           </div>
           <div>
@@ -48,7 +30,9 @@ const TestimonialsForm = () => {
               id={`testimonial-content-${index}`}
               name="content"
               value={testimonial.content}
-              onChange={(e) => handleInputChange(index, e)}
+              onChange={(e) =>
+                updateTestimonial(index, { content: e.target.value })
+              }
             />
           </div>
           <div>
@@ -57,14 +41,21 @@ const TestimonialsForm = () => {
               id={`testimonial-company-${index}`}
               name="company"
               value={testimonial.company}
-              onChange={(e) => handleInputChange(index, e)}
+              onChange={(e) =>
+                updateTestimonial(index, { company: e.target.value })
+              }
             />
           </div>
           {testimonials.length > 1 && <hr />}
         </div>
       ))}
-      <Button onClick={addTestimonial} variant="outline">
-        Add More Testimonials
+      <Button
+        onClick={() =>
+          addTestimonial({ id: Date.now(), name: "", content: "", company: "" })
+        }
+        variant="outline"
+      >
+        Add Testimonial
       </Button>
     </div>
   );

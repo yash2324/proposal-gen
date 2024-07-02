@@ -1,5 +1,5 @@
 import Header from "@/components/Header";
-import { authOptions } from "@/libs/AuthOptions";
+import { authOptions } from "@/lib/AuthOptions";
 import { Inter } from "next/font/google";
 import { getServerSession } from "next-auth";
 import { redirect } from "next/navigation";
