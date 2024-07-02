@@ -2,11 +2,12 @@ import Header from "@/components/Header";
 import { authOptions } from "@/lib/AuthOptions";
 import { Inter } from "next/font/google";
 import { getServerSession } from "next-auth";
-import { redirect } from "next/navigation";
 import React from "react";
 import "./globals.css";
+import NextAuthSessionProvider from "@/providers/NextAuthSessionProvider";
 
 const inter = Inter({ subsets: ["latin"] });
+
 interface ProtectedRootLayoutProps {
   children: React.ReactNode;
 }
@@ -19,8 +20,10 @@ export default async function ProtectedRootLayout({
   return (
     <html lang="en">
       <body className={inter.className}>
-        {session && <Header />}
-        <main className="container mb-4">{children}</main>
+        <NextAuthSessionProvider session={session}>
+          {session && <Header />}
+          <main className="container mb-4">{children}</main>
+        </NextAuthSessionProvider>
       </body>
     </html>
   );

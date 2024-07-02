@@ -1,14 +1,50 @@
 "use client";
-import React from "react";
+import React, { useEffect } from "react";
 import { Button } from "@/components/ui/button";
 import CompanyInfoForm from "@/app/user-settings/components/CompanyInfoForm";
 import TestimonialsForm from "@/app/user-settings/components/TestimonialsForm";
 import ProjectsForm from "@/app/user-settings/components/ProjectsForm";
+import useFormStore from "@/stores/formStore";
+import { useSession } from "next-auth/react";
 
 const MainForm = () => {
-  const handleSubmit = (e: React.FormEvent) => {
+  const { setEmail, email, companyInfo, testimonials, projects } =
+    useFormStore();
+  const { data: session } = useSession();
+  useEffect(() => {
+    if (session?.user?.email) {
+      setEmail(session.user.email);
+    }
+  }, [session, setEmail]);
+
+  const handleSubmit = async (e: React.FormEvent) => {
     e.preventDefault();
-    // Handle form submission
+
+    const data = {
+      email,
+      companyInfo,
+      testimonials,
+      projects,
+    };
+
+    try {
+      const response = await fetch("/api/submit", {
+        method: "POST",
+        headers: {
+          "Content-Type": "application/json",
+        },
+        body: JSON.stringify(data),
+      });
+
+      const result = await response.json();
+      if (response.ok) {
+        console.log("Data saved successfully:", result);
+      } else {
+        console.error("Error saving data:", result);
+      }
+    } catch (error) {
+      console.error("Error submitting form:", error);
+    }
   };
 
   return (

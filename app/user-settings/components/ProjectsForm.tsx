@@ -1,31 +1,14 @@
-import React, { useState } from "react";
+import React from "react";
 import { Label } from "@/components/ui/label";
 import { Input } from "@/components/ui/input";
 import { Textarea } from "@/components/ui/textarea";
 import { Button } from "@/components/ui/button";
+import useFormStore from "@/stores/formStore";
 
 const ProjectsForm = () => {
-  const [projects, setProjects] = useState([
-    { id: Date.now(), name: "", description: "" },
-  ]);
-
-  const addProject = () => {
-    setProjects([...projects, { id: Date.now(), name: "", description: "" }]);
-  };
-
-  const handleInputChange = (
-    index: number,
-    event: React.ChangeEvent<HTMLInputElement | HTMLTextAreaElement>
-  ) => {
-    const updatedProjects = projects.map((project, i) =>
-      i === index
-        ? { ...project, [event.target.name]: event.target.value }
-        : project
-    );
-    setProjects(updatedProjects);
-  };
+  const { projects, addProject, updateProject } = useFormStore();
   return (
-    <div className="space-y-4" id="projects">
+    <div id="projects" className="space-y-4">
       <h3 className="text-xl font-bold">Projects</h3>
       {projects.map((project, index) => (
         <div key={project.id} className="space-y-2">
@@ -35,7 +18,7 @@ const ProjectsForm = () => {
               id={`project-name-${index}`}
               name="name"
               value={project.name}
-              onChange={(e) => handleInputChange(index, e)}
+              onChange={(e) => updateProject(index, { name: e.target.value })}
             />
           </div>
           <div>
@@ -44,14 +27,21 @@ const ProjectsForm = () => {
               id={`project-description-${index}`}
               name="description"
               value={project.description}
-              onChange={(e) => handleInputChange(index, e)}
+              onChange={(e) =>
+                updateProject(index, { description: e.target.value })
+              }
             />
           </div>
           {projects.length > 1 && <hr />}
         </div>
       ))}
-      <Button onClick={addProject} variant="outline">
-        Add More Projects
+      <Button
+        onClick={() =>
+          addProject({ id: Date.now(), name: "", description: "" })
+        }
+        variant="outline"
+      >
+        Add Project
       </Button>
     </div>
   );
