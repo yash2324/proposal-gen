@@ -4,7 +4,7 @@ import { Input } from "@/components/ui/input";
 import { Textarea } from "@/components/ui/textarea";
 import { Button } from "@/components/ui/button";
 import useFormStore from "@/stores/formStore";
-
+const generateId = () => Math.random().toString(36).substr(2, 9);
 const TestimonialsForm = () => {
   const { testimonials, addTestimonial, updateTestimonial } = useFormStore();
 
@@ -51,7 +51,12 @@ const TestimonialsForm = () => {
       ))}
       <Button
         onClick={() =>
-          addTestimonial({ id: Date.now(), name: "", content: "", company: "" })
+          addTestimonial({
+            id: generateId(),
+            name: "",
+            content: "",
+            company: "",
+          })
         }
         variant="outline"
       >

@@ -1,5 +1,5 @@
 import { create } from "zustand";
-
+const generateId = () => Math.random().toString(36).substr(2, 9);
 interface CompanyInfo {
   name: string;
   address: string;
@@ -10,14 +10,14 @@ interface CompanyInfo {
 }
 
 interface Testimonial {
-  id: number;
+  id: string;
   name: string;
   content: string;
   company: string;
 }
 
 interface Project {
-  id: number;
+  id: string;
   name: string;
   description: string;
 }
@@ -33,14 +33,20 @@ interface FormState {
   updateTestimonial: (index: number, testimonial: Partial<Testimonial>) => void;
   addProject: (project: Project) => void;
   updateProject: (index: number, project: Partial<Project>) => void;
+  setAllData: (data: {
+    email: string;
+    companyInfo: CompanyInfo;
+    testimonials: Testimonial[];
+    projects: Project[];
+  }) => void;
 }
 
 const useFormStore = create<FormState>((set) => ({
   email: "",
   setEmail: (email) => set({ email }),
   companyInfo: { name: "", address: "", phone: "", email: "", website: "" },
-  testimonials: [{ id: Date.now(), name: "", content: "", company: "" }],
-  projects: [{ id: Date.now(), name: "", description: "" }],
+  testimonials: [{ id: generateId(), name: "", content: "", company: "" }],
+  projects: [{ id: generateId(), name: "", description: "" }],
   setCompanyInfo: (info) => set({ companyInfo: info }),
   addTestimonial: (testimonial) =>
     set((state) => ({ testimonials: [...state.testimonials, testimonial] })),
@@ -60,6 +66,13 @@ const useFormStore = create<FormState>((set) => ({
       const updatedProjects = [...state.projects];
       updatedProjects[index] = { ...updatedProjects[index], ...project };
       return { projects: updatedProjects };
+    }),
+  setAllData: (data) =>
+    set({
+      email: data.email,
+      companyInfo: data.companyInfo,
+      testimonials: data.testimonials,
+      projects: data.projects,
     }),
 }));
 

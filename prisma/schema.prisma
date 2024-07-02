@@ -12,7 +12,7 @@ datasource db {
 
 model User{
   id String @db.ObjectId @default(auto()) @map("_id") @id
-  email String
+  email String @unique
   hashedPassword String
   proposals      Proposals[]
   companyInfo    CompanyInfo[]
@@ -40,7 +40,7 @@ model CompanyInfo{
   pricing Json?
   projects Projects[]
   website String
-  userId String @db.ObjectId
+  userId String @db.ObjectId @unique
   user User @relation(fields: [userId], references: [id])
 }
 model Testimonials{

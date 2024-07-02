@@ -6,41 +6,48 @@ import TestimonialsForm from "@/app/user-settings/components/TestimonialsForm";
 import ProjectsForm from "@/app/user-settings/components/ProjectsForm";
 import useFormStore from "@/stores/formStore";
 import { useSession } from "next-auth/react";
-
+import { saveUserData } from "./actions";
+import { fetchUserData } from "./fetchUserData";
 const MainForm = () => {
-  const { setEmail, email, companyInfo, testimonials, projects } =
-    useFormStore();
+  const { companyInfo, testimonials, projects, setAllData } = useFormStore();
   const { data: session } = useSession();
   useEffect(() => {
-    if (session?.user?.email) {
-      setEmail(session.user.email);
-    }
-  }, [session, setEmail]);
+    const fetchData = async () => {
+      if (session?.user?.email) {
+        try {
+          const userData = await fetchUserData(session.user.email);
+          if (userData && userData.success) {
+            setAllData(userData.data);
+          } else {
+            console.error("Failed to fetch or invalid user data");
+          }
+        } catch (error) {
+          console.error("Error fetching user data:", error);
+        }
+      }
+    };
+
+    fetchData();
+  }, [session, setAllData]);
 
   const handleSubmit = async (e: React.FormEvent) => {
     e.preventDefault();
-
+    if (!session?.user?.email) {
+      console.error("User not authenticated");
+      return;
+    }
     const data = {
-      email,
+      email: session.user.email,
       companyInfo,
       testimonials,
       projects,
     };
-
     try {
-      const response = await fetch("/api/submit", {
-        method: "POST",
-        headers: {
-          "Content-Type": "application/json",
-        },
-        body: JSON.stringify(data),
-      });
-
-      const result = await response.json();
-      if (response.ok) {
-        console.log("Data saved successfully:", result);
+      const result = await saveUserData(data);
+      if (result.success) {
+        console.log("Data saved successfully:", result.company);
       } else {
-        console.error("Error saving data:", result);
+        console.error("Error saving data:", result.error);
       }
     } catch (error) {
       console.error("Error submitting form:", error);
