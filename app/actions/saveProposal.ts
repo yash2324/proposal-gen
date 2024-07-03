@@ -12,6 +12,7 @@ export async function saveProposal(formData: FormData) {
     throw new Error("Unauthorized");
   }
 
+  const id = formData.get("id") as string | null;
   const title = formData.get("title") as string;
   const templateId = formData.get("templateId") as string;
   const content = formData.get("content") as string;
@@ -25,14 +26,27 @@ export async function saveProposal(formData: FormData) {
       throw new Error("User not found");
     }
 
-    const proposal = await prisma.proposals.create({
-      data: {
-        title,
-        templateId,
-        content,
-        userId: user.id,
-      },
-    });
+    let proposal;
+
+    if (id) {
+      proposal = await prisma.proposals.update({
+        where: { id: id },
+        data: {
+          title,
+          templateId,
+          content,
+        },
+      });
+    } else {
+      proposal = await prisma.proposals.create({
+        data: {
+          title,
+          templateId,
+          content,
+          userId: user.id,
+        },
+      });
+    }
 
     return proposal;
   } catch (error) {

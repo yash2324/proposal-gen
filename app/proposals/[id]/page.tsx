@@ -4,6 +4,7 @@
 import React, { useEffect, useState } from "react";
 import { useParams } from "next/navigation";
 import useProposalStore from "../../../stores/proposalStore";
+import "react-quill/dist/quill.snow.css";
 
 export default function ProposalPage() {
   interface Proposal {
@@ -31,7 +32,12 @@ export default function ProposalPage() {
   return (
     <div className="container mx-auto p-4">
       <h1 className="text-2xl font-bold mb-4">{proposal.title}</h1>
-      <div dangerouslySetInnerHTML={{ __html: proposal.content }} />
+      <div className="ql-snow">
+        <div
+          className="ql-editor"
+          dangerouslySetInnerHTML={{ __html: proposal.content }}
+        />
+      </div>
     </div>
   );
 }
