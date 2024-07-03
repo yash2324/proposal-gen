@@ -13,7 +13,7 @@ const CompanyInfoForm = () => {
         <Input
           id="company-name"
           name="company-name"
-          value={companyInfo.name}
+          value={companyInfo.name || ""}
           onChange={(e) =>
             setCompanyInfo({ ...companyInfo, name: e.target.value })
           }
@@ -24,7 +24,7 @@ const CompanyInfoForm = () => {
         <Input
           id="company-address"
           name="company-address"
-          value={companyInfo.address}
+          value={companyInfo.address || ""}
           onChange={(e) =>
             setCompanyInfo({ ...companyInfo, address: e.target.value })
           }
@@ -35,7 +35,7 @@ const CompanyInfoForm = () => {
         <Input
           id="company-phone"
           name="company-phone"
-          value={companyInfo.phone}
+          value={companyInfo.phone || ""}
           onChange={(e) =>
             setCompanyInfo({ ...companyInfo, phone: e.target.value })
           }
@@ -46,7 +46,7 @@ const CompanyInfoForm = () => {
         <Input
           id="company-email"
           name="company-email"
-          value={companyInfo.email}
+          value={companyInfo.email || ""}
           onChange={(e) =>
             setCompanyInfo({ ...companyInfo, email: e.target.value })
           }
@@ -57,7 +57,7 @@ const CompanyInfoForm = () => {
         <Input
           id="company-logo"
           name="company-logo"
-          value={companyInfo.logo}
+          value={companyInfo.logo || ""}
           onChange={(e) =>
             setCompanyInfo({ ...companyInfo, logo: e.target.value })
           }
@@ -68,7 +68,7 @@ const CompanyInfoForm = () => {
         <Input
           id="company-website"
           name="company-website"
-          value={companyInfo.website}
+          value={companyInfo.website || ""}
           onChange={(e) =>
             setCompanyInfo({ ...companyInfo, website: e.target.value })
           }

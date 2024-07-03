@@ -68,12 +68,15 @@ const useFormStore = create<FormState>((set) => ({
       return { projects: updatedProjects };
     }),
   setAllData: (data) =>
-    set({
-      email: data.email,
-      companyInfo: data.companyInfo,
-      testimonials: data.testimonials,
-      projects: data.projects,
+    set((state) => {
+      console.log("Setting all data in store:", data);
+      return data;
     }),
 }));
+useFormStore.getState = () => {
+  const state = useFormStore.getState();
+  console.log("Current store state:", state);
+  return state;
+};
 
 export default useFormStore;
