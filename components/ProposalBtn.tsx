@@ -49,7 +49,7 @@ export default function ProposalBtn() {
   return (
     <Dialog open={isOpen} onOpenChange={setIsOpen}>
       <DialogTrigger asChild>
-        <Button>Choose Proposal Template</Button>
+        <Button className="m-5">Get Started</Button>
       </DialogTrigger>
       <DialogContent className="sm:max-w-[800px] max-h-[90vh] overflow-auto">
         <DialogHeader>
@@ -72,8 +72,10 @@ export default function ProposalBtn() {
             >
               {template.thumbnail && (
                 <Image
-                  src={template.thumbnail}
+                  src={"placeholder.svg"}
                   alt={`${template.name} Template`}
+                  width={300}
+                  height={200}
                   className="object-cover w-full h-48 rounded-t-lg"
                 />
               )}

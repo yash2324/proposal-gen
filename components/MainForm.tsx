@@ -2,13 +2,13 @@
 "use client";
 
 import React, { useEffect } from "react";
-import { Button } from "@/components/ui/button";
-import CompanyInfoForm from "@/app/user-settings/components/CompanyInfoForm";
-import TestimonialsForm from "@/app/user-settings/components/TestimonialsForm";
-import ProjectsForm from "@/app/user-settings/components/ProjectsForm";
-import useFormStore from "@/stores/formStore";
+import { Button } from "./ui/button";
+import CompanyInfoForm from "./CompanyInfoForm";
+import TestimonialsForm from "./TestimonialsForm";
+import ProjectsForm from "./ProjectsForm";
+import useFormStore from "../stores/formStore";
 import { useSession } from "next-auth/react";
-import { saveUserData } from "@/app/user-settings/actions";
+import { saveUserData } from "../app/actions/saveUserAction";
 
 export default function MainForm({ initialData }: { initialData: any }) {
   const { email, companyInfo, testimonials, projects, setAllData } =

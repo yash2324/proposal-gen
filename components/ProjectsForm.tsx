@@ -1,9 +1,9 @@
 import React from "react";
-import { Label } from "@/components/ui/label";
-import { Input } from "@/components/ui/input";
-import { Textarea } from "@/components/ui/textarea";
-import { Button } from "@/components/ui/button";
-import useFormStore from "@/stores/formStore";
+import { Label } from "./ui/label";
+import { Input } from "./ui/input";
+import { Textarea } from "./ui/textarea";
+import { Button } from "./ui/button";
+import useFormStore from "../stores/formStore";
 const generateId = () => Math.random().toString(36).substr(2, 9);
 const ProjectsForm = () => {
   const { projects, addProject, updateProject } = useFormStore();
