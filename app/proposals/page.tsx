@@ -9,7 +9,7 @@ export default function ProposalsPage() {
     <div className="container mx-auto p-4">
       <h1 className="text-2xl font-bold mb-4">Your Proposals</h1>
       {proposals.length === 0 ? (
-        <p>You haven't created any proposals yet.</p>
+        <p>You haven&apos;t created any proposals yet.</p>
       ) : (
         <ul>
           {proposals.map((proposal) => (

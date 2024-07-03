@@ -14,6 +14,7 @@ import { Button } from "@/components/ui/button";
 import { Card, CardContent } from "@/components/ui/card";
 import { Input } from "@/components/ui/input";
 import { useRouter } from "next/navigation";
+import Image from "next/image";
 
 interface Template {
   id: string;
@@ -70,7 +71,7 @@ export default function ProposalBtn() {
               onClick={() => handleTemplateSelect(template.id)}
             >
               {template.thumbnail && (
-                <img
+                <Image
                   src={template.thumbnail}
                   alt={`${template.name} Template`}
                   className="object-cover w-full h-48 rounded-t-lg"

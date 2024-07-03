@@ -1,0 +1,39 @@
+.editor-container {
+  max-width: 210mm;
+  margin: 0 auto;
+  background: white;
+  box-shadow: 0 0 10px rgba(0, 0, 0, 0.1);
+}
+
+.editor-content {
+  min-height: 100mm; /* Minimum height of one A4 page */
+}
+
+.ql-editor {
+  padding: 20mm;
+  box-sizing: border-box;
+  min-height: 100mm; /* Minimum height of one A4 page */
+}
+
+/* Create visual page breaks */
+.ql-editor > * {
+  margin-bottom: 0;
+  padding-bottom: 0;
+}
+
+.ql-editor > *:nth-child(1n + 1) {
+  padding-top: 1rem;
+}
+
+.ql-editor > *:nth-child(40n),
+.ql-editor > *:last-child {
+  margin-bottom: 0.2rem;
+  padding-bottom: 1rem;
+}
+
+/* Adjust toolbar position */
+.ql-toolbar {
+  position: sticky;
+  top: 0;
+  z-index: 1000;
+}

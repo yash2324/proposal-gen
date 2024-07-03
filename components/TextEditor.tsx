@@ -1,4 +1,3 @@
-// components/TextEditor.tsx
 "use client";
 
 import { useState, useEffect, useRef } from "react";
@@ -6,13 +5,13 @@ import { useRouter, useSearchParams } from "next/navigation";
 import dynamic from "next/dynamic";
 import useProposalStore from "@/stores/proposalStore";
 import { saveProposal } from "@/app/actions/saveProposal";
-
+import "react-quill/dist/quill.bubble.css";
+import "@/styles/TextEditor.css";
+import { get } from "http";
 const ReactQuill = dynamic(() => import("react-quill"), {
   ssr: false,
   loading: () => <p>Loading editor...</p>,
 });
-
-import "react-quill/dist/quill.bubble.css";
 
 const modules = {
   toolbar: [
@@ -44,7 +43,7 @@ export default function TextEditor() {
   const [id, setId] = useState<string | null>(null);
   const [title, setTitle] = useState("");
   const [templateId, setTemplateId] = useState("");
-  const [content, setContent] = useState("");
+  const [content, setContent] = useState<string>("");
   const { addProposal, updateProposal, getProposal } = useProposalStore();
 
   useEffect(() => {
@@ -75,7 +74,7 @@ export default function TextEditor() {
           .catch((error) => console.error("Error fetching template:", error));
       }
     }
-  }, [searchParams]);
+  }, [searchParams, getProposal]);
 
   const handleSave = async (e: React.FormEvent) => {
     e.preventDefault();
@@ -118,14 +117,16 @@ export default function TextEditor() {
         required
         className="w-full p-2 border rounded"
       />
-      <ReactQuill
-        theme="bubble"
-        value={content}
-        onChange={setContent}
-        modules={modules}
-        formats={formats}
-        className=" mb-12"
-      />
+      <div className="editor-container">
+        <ReactQuill
+          theme="bubble"
+          value={content}
+          onChange={setContent}
+          modules={modules}
+          formats={formats}
+          className=" mb-12"
+        />
+      </div>
       <button
         type="submit"
         className="px-4 py-2 bg-blue-500 text-white rounded hover:bg-blue-600"
