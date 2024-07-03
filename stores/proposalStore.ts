@@ -4,9 +4,9 @@ import { persist } from "zustand/middleware";
 interface Proposal {
   id: string;
   title: string;
-  template: string;
+  templateId: string;
   content: string;
-  images: string[];
+  images?: string[];
 }
 
 interface ProposalState {
