@@ -1,5 +1,3 @@
-"use server";
-
 import prisma from "@/lib/prismadb";
 
 interface UserData {
@@ -27,18 +25,17 @@ export async function saveUserData(data: UserData) {
     let company;
 
     if (user.companyInfo && user.companyInfo.length > 0) {
-      // Update existing CompanyInfo
       company = await prisma.companyInfo.update({
         where: { userId: userId },
         data: {
           ...companyInfo,
           Testimonials: {
             deleteMany: {},
-            create: testimonials.map(({ id, ...rest }) => rest),
+            create: testimonials.map(({ id, companyInfoId, ...rest }) => rest),
           },
           projects: {
             deleteMany: {},
-            create: projects.map(({ id, ...rest }) => rest),
+            create: projects.map(({ id, companyInfoId, ...rest }) => rest),
           },
         },
         include: {
@@ -47,16 +44,15 @@ export async function saveUserData(data: UserData) {
         },
       });
     } else {
-      // Create new CompanyInfo
       company = await prisma.companyInfo.create({
         data: {
           ...companyInfo,
           userId: userId,
           Testimonials: {
-            create: testimonials.map(({ id, ...rest }) => rest),
+            create: testimonials.map(({ id, companyInfoId, ...rest }) => rest),
           },
           projects: {
-            create: projects.map(({ id, ...rest }) => rest),
+            create: projects.map(({ id, companyInfoId, ...rest }) => rest),
           },
         },
         include: {
