@@ -106,9 +106,15 @@ export async function saveUserData(data: UserData) {
       if (pricingSection) {
         await prisma.pricingSection.upsert({
           where: { companyInfoId: companyInfoRecord.id },
-          update: pricingSection,
+          update: {
+            items: pricingSection.items,
+            totalAmount: pricingSection.totalAmount,
+            currency: pricingSection.currency,
+          },
           create: {
-            ...pricingSection,
+            items: pricingSection.items,
+            totalAmount: pricingSection.totalAmount,
+            currency: pricingSection.currency,
             companyInfoId: companyInfoRecord.id,
           },
         });
