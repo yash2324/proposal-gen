@@ -154,7 +154,7 @@ export default function ProposalBtn() {
                   >
                     {template.thumbnail && (
                       <Image
-                        src={"sample.svg"} // Update with actual template.thumbnail if available
+                        src={template.thumbnail} // Update with actual template.thumbnail if available
                         alt={`${template.name} Template`}
                         width={300}
                         height={200}
