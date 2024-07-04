@@ -3,6 +3,7 @@ import { authOptions } from "@/lib/AuthOptions";
 import { getServerSession } from "next-auth";
 import { redirect } from "next/navigation";
 import React from "react";
+import ProposalsPage from "./proposals/page";
 
 export default async function HomePage() {
   const session = await getServerSession(authOptions);
@@ -28,6 +29,7 @@ export default async function HomePage() {
           <ProposalBtn />
         </div>
       </div>
+      <ProposalsPage />
     </main>
   );
 }

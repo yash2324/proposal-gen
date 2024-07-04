@@ -1,13 +1,13 @@
 "use client";
 
-import { useState, useEffect, useRef } from "react";
+import { useState, useEffect } from "react";
 import { useRouter, useSearchParams } from "next/navigation";
 import dynamic from "next/dynamic";
 import useProposalStore from "@/stores/proposalStore";
 import { saveProposal } from "@/app/actions/saveProposal";
 import "react-quill/dist/quill.bubble.css";
 import "@/styles/TextEditor.css";
-import { get } from "http";
+
 const ReactQuill = dynamic(() => import("react-quill"), {
   ssr: false,
   loading: () => <p>Loading editor...</p>,
@@ -44,36 +44,45 @@ export default function TextEditor() {
   const [title, setTitle] = useState("");
   const [templateId, setTemplateId] = useState("");
   const [content, setContent] = useState<string>("");
+  const [isLoading, setIsLoading] = useState(true);
   const { addProposal, updateProposal, getProposal } = useProposalStore();
 
   useEffect(() => {
-    const proposalId = searchParams.get("id");
-    const name = searchParams.get("name");
-    const template = searchParams.get("template");
+    const loadProposalData = async () => {
+      setIsLoading(true);
+      const proposalId = searchParams.get("id");
+      const name = searchParams.get("name");
+      const template = searchParams.get("template");
 
-    if (proposalId) {
-      setId(proposalId);
-      // Fetch existing proposal data
-      // This assumes you have a function to get a proposal by ID
-      const existingProposal = getProposal(proposalId);
-      if (existingProposal) {
-        setTitle(existingProposal.title);
-        setTemplateId(existingProposal.templateId);
-        setContent(existingProposal.content);
-      }
-    } else {
-      if (name) setTitle(name);
-      if (template) {
+      if (proposalId) {
+        // Editing existing proposal
+        setId(proposalId);
+        const existingProposal = getProposal(proposalId);
+
+        if (existingProposal) {
+          setTitle(existingProposal.title);
+          setTemplateId(existingProposal.templateId);
+          setContent(existingProposal.content);
+        }
+      } else if (template) {
+        // Creating new proposal from template
         setTemplateId(template);
-        // Fetch template content
-        fetch(`/api/templates/${template}`)
-          .then((response) => response.json())
-          .then((data) => {
-            setContent(data.content);
-          })
-          .catch((error) => console.error("Error fetching template:", error));
+        if (name) setTitle(decodeURIComponent(name));
+        try {
+          const response = await fetch(`/api/templates/${template}`);
+          const data = await response.json();
+          setContent(data.content);
+        } catch (error) {
+          console.error("Error fetching template:", error);
+        }
+      } else {
+        // Creating new proposal without template
+        if (name) setTitle(decodeURIComponent(name));
       }
-    }
+      setIsLoading(false);
+    };
+
+    loadProposalData();
   }, [searchParams, getProposal]);
 
   const handleSave = async (e: React.FormEvent) => {
@@ -83,6 +92,7 @@ export default function TextEditor() {
     formData.append("title", title);
     formData.append("templateId", templateId);
     formData.append("content", content);
+    if (id) formData.append("id", id);
 
     try {
       const savedProposal = await saveProposal(formData);
@@ -107,6 +117,10 @@ export default function TextEditor() {
     }
   };
 
+  if (isLoading) {
+    return <div>Loading editor...</div>;
+  }
+
   return (
     <form onSubmit={handleSave} className="space-y-4">
       <input
@@ -124,14 +138,14 @@ export default function TextEditor() {
           onChange={setContent}
           modules={modules}
           formats={formats}
-          className=" mb-12"
+          className="mb-12"
         />
       </div>
       <button
         type="submit"
         className="px-4 py-2 bg-blue-500 text-white rounded hover:bg-blue-600"
       >
-        Save Proposal
+        {id ? "Update Proposal" : "Save Proposal"}
       </button>
     </form>
   );
