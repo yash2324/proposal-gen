@@ -55,7 +55,7 @@ export async function saveUserData(data: UserData) {
 
     // Use a transaction to ensure data consistency
     const result = await prisma.$transaction(async (prisma) => {
-      let companyInfoRecord;
+      let companyInfoRecord: any;
 
       // Check if CompanyInfo exists
       const existingCompanyInfo = await prisma.companyInfo.findUnique({
@@ -66,9 +66,7 @@ export async function saveUserData(data: UserData) {
         // Update existing company info
         companyInfoRecord = await prisma.companyInfo.update({
           where: { id: existingCompanyInfo.id },
-          data: {
-            ...companyInfo,
-          },
+          data: { ...companyInfo },
         });
       } else {
         // Create new company info

@@ -31,10 +31,21 @@ export async function POST(request: Request) {
     console.log("Generated proposal:", generatedProposal);
 
     return NextResponse.json({ proposal: generatedProposal });
-  } catch (error) {
+  } catch (error: unknown) {
     console.error("Error in generate-proposal API:", error);
+
+    if (error instanceof Error) {
+      return NextResponse.json(
+        { error: "Failed to generate proposal", details: error.message },
+        { status: 500 }
+      );
+    }
+
     return NextResponse.json(
-      { error: "Failed to generate proposal", details: error.message },
+      {
+        error: "Failed to generate proposal",
+        details: "An unknown error occurred",
+      },
       { status: 500 }
     );
   }

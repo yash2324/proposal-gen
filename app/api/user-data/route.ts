@@ -1,8 +1,8 @@
-import { NextApiRequest, NextApiResponse } from "next";
+import { NextRequest } from "next/server";
 import { fetchUserData } from "@/app/actions/fetchUserData";
 import { NextResponse } from "next/server";
 
-export async function GET(req: NextApiRequest, res: NextApiResponse) {
+export async function GET(req: NextRequest) {
   try {
     const result = await fetchUserData();
     return NextResponse.json(result);
