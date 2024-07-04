@@ -47,8 +47,13 @@ export default function ProposalBtn() {
       .then((data) => setTemplates(data))
       .catch((error) => console.error("Error fetching templates:", error));
 
-    fetch("/api/user-data")
-      .then((response) => response.json())
+    fetch("/api/user-data", { method: "GET" }) // Ensure method is GET
+      .then((response) => {
+        if (!response.ok) {
+          throw new Error(`Error: ${response.status}`);
+        }
+        return response.json();
+      })
       .then((data) => {
         if (data.success) {
           setUserData(data.data);
@@ -63,7 +68,7 @@ export default function ProposalBtn() {
       return;
     }
 
-    if (!userData || !isValidUserData(userData)) {
+    if (!userData || !userData.companyInfo || !userData.companyInfo.name) {
       alert("Please complete your user settings before creating a proposal.");
       router.push("/user-settings");
       return;
@@ -71,18 +76,6 @@ export default function ProposalBtn() {
 
     router.push(
       `/editor?template=${templateId}&name=${encodeURIComponent(proposalName)}`
-    );
-  };
-
-  const isValidUserData = (data: UserData): boolean => {
-    return (
-      !!data.email &&
-      !!data.companyInfo &&
-      !!data.companyInfo.name &&
-      !!data.companyInfo.address &&
-      !!data.companyInfo.phone &&
-      !!data.companyInfo.email &&
-      !!data.companyInfo.website
     );
   };
 
@@ -112,7 +105,7 @@ export default function ProposalBtn() {
             >
               {template.thumbnail && (
                 <Image
-                  src={"sample.svg"}
+                  src={"sample.svg"} // Update with actual template.thumbnail if available
                   alt={`${template.name} Template`}
                   width={300}
                   height={200}
