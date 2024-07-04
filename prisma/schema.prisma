@@ -10,26 +10,28 @@ datasource db {
   url      = env("DATABASE_URL")
 }
 
-model User{
-  id String @db.ObjectId @default(auto()) @map("_id") @id
-  email String @unique
+model User {
+  id             String        @id @default(auto()) @map("_id") @db.ObjectId
+  email          String        @unique
   hashedPassword String
   proposals      Proposals[]
   companyInfo    CompanyInfo[]
-  createdAt DateTime @default(now())
-  updatedAt DateTime @updatedAt
+  createdAt      DateTime      @default(now())
+  updatedAt      DateTime      @updatedAt
 }
-model Proposals{
-  id    String @id @default(auto()) @map("_id") @db.ObjectId
-  title String
-  templateId String   @db.ObjectId
-  content String?
-  images    String[]
-  createdAt DateTime @default(now())
-  updatedAt DateTime @updatedAt
-  userId String @db.ObjectId
-  user User @relation(fields: [userId], references: [id])
+
+model Proposals {
+  id             String           @id @default(auto()) @map("_id") @db.ObjectId
+  title          String
+  templateId     String           @db.ObjectId
+  content        String?
+  images         String[]
+  createdAt      DateTime         @default(now())
+  updatedAt      DateTime         @updatedAt
+  userId         String           @db.ObjectId
+  user           User             @relation(fields: [userId], references: [id])
 }
+
 model Template {
   id          String   @id @default(auto()) @map("_id") @db.ObjectId
   name        String
@@ -39,32 +41,56 @@ model Template {
   createdAt   DateTime @default(now())
   updatedAt   DateTime @updatedAt
 }
-model CompanyInfo{
-  id    String @id @default(auto()) @map("_id") @db.ObjectId
-  name String
-  address String
-  phone String
-  email String
-  logo String?
+
+model CompanyInfo {
+  id           String         @id @default(auto()) @map("_id") @db.ObjectId
+  name         String
+  address      String
+  phone        String
+  email        String
+  logo         String?
+   executiveSummary String?
+  pricingSection PricingSection?
   Testimonials Testimonials[]
-  pricing Json?
-  projects Projects[]
-  website String
-  userId String @db.ObjectId @unique
-  user User @relation(fields: [userId], references: [id])
+  pricing      Json?
+  projects     Projects[]
+  website      String
+  teamMembers  TeamMember[]
+  userId       String         @db.ObjectId @unique
+  user         User           @relation(fields: [userId], references: [id])
 }
-model Testimonials{
-  id    String @id @default(auto()) @map("_id") @db.ObjectId
-  name String
-  content String
-  company String
-  companyInfoId String @db.ObjectId
-  companyInfo CompanyInfo @relation(fields: [companyInfoId], references: [id])
+
+model Testimonials {
+  id            String      @id @default(auto()) @map("_id") @db.ObjectId
+  name          String
+  content       String
+  company       String
+  companyInfoId String      @db.ObjectId
+  companyInfo   CompanyInfo @relation(fields: [companyInfoId], references: [id])
 }
-model Projects{
-  id    String @id @default(auto()) @map("_id") @db.ObjectId
-  name String
-  description String
-  companyInfoId String @db.ObjectId
-  companyInfo CompanyInfo @relation(fields: [companyInfoId], references: [id])
+
+model Projects {
+  id            String      @id @default(auto()) @map("_id") @db.ObjectId
+  name          String
+  description   String
+  companyInfoId String      @db.ObjectId
+  companyInfo   CompanyInfo @relation(fields: [companyInfoId], references: [id])
+}
+
+model PricingSection {
+  id          String    @id @default(auto()) @map("_id") @db.ObjectId
+  items       Json[]
+  totalAmount Float
+  currency    String    @default("USD")
+  companyId  String    @db.ObjectId @unique
+  company    CompanyInfo @relation(fields: [companyId], references: [id])
+}
+
+model TeamMember {
+  id            String      @id @default(auto()) @map("_id") @db.ObjectId
+  name          String
+  position      String
+  bio           String?
+  companyInfoId String      @db.ObjectId
+  companyInfo   CompanyInfo @relation(fields: [companyInfoId], references: [id])
 }

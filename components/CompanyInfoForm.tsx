@@ -1,6 +1,7 @@
 import React from "react";
 import { Label } from "./ui/label";
 import { Input } from "./ui/input";
+import { Textarea } from "./ui/textarea";
 import useFormStore from "../stores/formStore";
 
 const CompanyInfoForm = () => {
@@ -71,6 +72,17 @@ const CompanyInfoForm = () => {
           value={companyInfo.website || ""}
           onChange={(e) =>
             setCompanyInfo({ ...companyInfo, website: e.target.value })
+          }
+        />
+      </div>
+      <div>
+        <Label htmlFor="company-executive-summary">Executive Summary</Label>
+        <Textarea
+          id="company-executive-summary"
+          name="company-executive-summary"
+          value={companyInfo.executiveSummary || ""}
+          onChange={(e) =>
+            setCompanyInfo({ ...companyInfo, executiveSummary: e.target.value })
           }
         />
       </div>

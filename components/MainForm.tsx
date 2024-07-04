@@ -1,4 +1,3 @@
-// app/user-settings/MainForm.tsx
 "use client";
 
 import React, { useEffect } from "react";
@@ -6,13 +5,23 @@ import { Button } from "./ui/button";
 import CompanyInfoForm from "./CompanyInfoForm";
 import TestimonialsForm from "./TestimonialsForm";
 import ProjectsForm from "./ProjectsForm";
+import TeamMembersForm from "./TeamMembersForm";
+import PricingSectionForm from "./PricingSectionForm";
 import useFormStore from "../stores/formStore";
 import { useSession } from "next-auth/react";
 import { saveUserData } from "../app/actions/saveUserAction";
 
 export default function MainForm({ initialData }: { initialData: any }) {
-  const { email, companyInfo, testimonials, projects, setAllData } =
-    useFormStore();
+  const {
+    email,
+    companyInfo,
+    testimonials,
+    projects,
+    teamMembers,
+    proposals,
+    pricingSection,
+    setAllData,
+  } = useFormStore();
   const { data: session } = useSession();
 
   useEffect(() => {
@@ -33,6 +42,9 @@ export default function MainForm({ initialData }: { initialData: any }) {
       companyInfo,
       testimonials,
       projects,
+      teamMembers,
+      proposals,
+      pricingSection,
     };
     try {
       const result = await saveUserData(data);
@@ -81,6 +93,24 @@ export default function MainForm({ initialData }: { initialData: any }) {
           >
             Projects
           </Button>
+          <Button
+            variant="outline"
+            className="w-full text-left"
+            onClick={() =>
+              document.getElementById("team-members")?.scrollIntoView()
+            }
+          >
+            Team Members
+          </Button>
+          <Button
+            variant="outline"
+            className="w-full text-left"
+            onClick={() =>
+              document.getElementById("pricing-section")?.scrollIntoView()
+            }
+          >
+            Pricing
+          </Button>
         </nav>
       </aside>
       <main className="flex-1 p-4">
@@ -88,6 +118,8 @@ export default function MainForm({ initialData }: { initialData: any }) {
           <CompanyInfoForm />
           <TestimonialsForm />
           <ProjectsForm />
+          <TeamMembersForm />
+          <PricingSectionForm />
           <div className="mt-4">
             <Button type="submit">Save Changes</Button>
           </div>

@@ -1,5 +1,7 @@
 import { create } from "zustand";
+
 const generateId = () => Math.random().toString(36).substr(2, 9);
+
 interface CompanyInfo {
   name: string;
   address: string;
@@ -7,6 +9,7 @@ interface CompanyInfo {
   email: string;
   logo?: string;
   website: string;
+  executiveSummary?: string;
 }
 
 interface Testimonial {
@@ -22,22 +25,59 @@ interface Project {
   description: string;
 }
 
+interface TeamMember {
+  id: string;
+  name: string;
+  position: string;
+  bio?: string;
+}
+
+interface PricingItem {
+  description: string;
+  amount: number;
+}
+
+interface PricingSection {
+  items: PricingItem[];
+  totalAmount: number;
+  currency: string;
+}
+
+interface Proposal {
+  id: string;
+  title: string;
+  templateId: string;
+  content?: string;
+  images: string[];
+}
+
 interface FormState {
   email: string;
   setEmail: (email: string) => void;
   companyInfo: CompanyInfo;
   testimonials: Testimonial[];
   projects: Project[];
+  teamMembers: TeamMember[];
+  proposals: Proposal[];
+  pricingSection: PricingSection;
   setCompanyInfo: (info: CompanyInfo) => void;
   addTestimonial: (testimonial: Testimonial) => void;
   updateTestimonial: (index: number, testimonial: Partial<Testimonial>) => void;
   addProject: (project: Project) => void;
   updateProject: (index: number, project: Partial<Project>) => void;
+  addTeamMember: (teamMember: TeamMember) => void;
+  updateTeamMember: (index: number, teamMember: Partial<TeamMember>) => void;
+  addProposal: (proposal: Proposal) => void;
+  updateProposal: (index: number, proposal: Partial<Proposal>) => void;
+  setPricingSection: (pricingSection: PricingSection) => void;
   setAllData: (data: {
     email: string;
     companyInfo: CompanyInfo;
     testimonials: Testimonial[];
     projects: Project[];
+    teamMembers: TeamMember[];
+    proposals: Proposal[];
+    pricingSection: PricingSection;
   }) => void;
 }
 
@@ -47,6 +87,9 @@ const useFormStore = create<FormState>((set) => ({
   companyInfo: { name: "", address: "", phone: "", email: "", website: "" },
   testimonials: [{ id: generateId(), name: "", content: "", company: "" }],
   projects: [{ id: generateId(), name: "", description: "" }],
+  teamMembers: [{ id: generateId(), name: "", position: "" }],
+  proposals: [{ id: generateId(), title: "", templateId: "", images: [] }],
+  pricingSection: { items: [], totalAmount: 0, currency: "USD" },
   setCompanyInfo: (info) => set({ companyInfo: info }),
   addTestimonial: (testimonial) =>
     set((state) => ({ testimonials: [...state.testimonials, testimonial] })),
@@ -67,16 +110,31 @@ const useFormStore = create<FormState>((set) => ({
       updatedProjects[index] = { ...updatedProjects[index], ...project };
       return { projects: updatedProjects };
     }),
+  addTeamMember: (teamMember) =>
+    set((state) => ({ teamMembers: [...state.teamMembers, teamMember] })),
+  updateTeamMember: (index, teamMember) =>
+    set((state) => {
+      const updatedTeamMembers = [...state.teamMembers];
+      updatedTeamMembers[index] = {
+        ...updatedTeamMembers[index],
+        ...teamMember,
+      };
+      return { teamMembers: updatedTeamMembers };
+    }),
+  addProposal: (proposal) =>
+    set((state) => ({ proposals: [...state.proposals, proposal] })),
+  updateProposal: (index, proposal) =>
+    set((state) => {
+      const updatedProposals = [...state.proposals];
+      updatedProposals[index] = { ...updatedProposals[index], ...proposal };
+      return { proposals: updatedProposals };
+    }),
+  setPricingSection: (pricingSection) => set({ pricingSection }),
   setAllData: (data) =>
     set((state) => {
       console.log("Setting all data in store:", data);
       return data;
     }),
 }));
-useFormStore.getState = () => {
-  const state = useFormStore.getState();
-  console.log("Current store state:", state);
-  return state;
-};
 
 export default useFormStore;
