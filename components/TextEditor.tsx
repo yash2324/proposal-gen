@@ -47,7 +47,12 @@ export default function TextEditor() {
   const [content, setContent] = useState<string>("");
   const [isLoading, setIsLoading] = useState(true);
   const [error, setError] = useState<string | null>(null);
-  const { addProposal, updateProposal } = useProposalStore();
+  const {
+    addProposal,
+    updateProposal,
+    generatedProposal,
+    clearGeneratedProposal,
+  } = useProposalStore();
 
   useEffect(() => {
     const loadProposalData = async () => {
@@ -76,12 +81,17 @@ export default function TextEditor() {
       } else if (template) {
         setTemplateId(template);
         if (name) setTitle(decodeURIComponent(name));
-        try {
-          const response = await fetch(`/api/templates/${template}`);
-          const data = await response.json();
-          setContent(data.content);
-        } catch (error) {
-          console.error("Error fetching template:", error);
+        if (generatedProposal) {
+          setContent(generatedProposal);
+          clearGeneratedProposal(); // Clear after use
+        } else if (template) {
+          try {
+            const response = await fetch(`/api/templates/${template}`);
+            const data = await response.json();
+            setContent(data.content);
+          } catch (error) {
+            console.error("Error fetching template:", error);
+          }
         }
       } else {
         // Creating new proposal without template

@@ -28,7 +28,7 @@ export async function fetchUserData() {
       return { success: false, error: "User or company info not found" };
     }
 
-    const companyInfo = user.companyInfo[0];
+    const companyInfo = user.companyInfo;
 
     return {
       success: true,

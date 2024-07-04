@@ -12,16 +12,20 @@ interface Proposal {
 
 interface ProposalState {
   proposals: Proposal[];
+  generatedProposal: string | null;
   addProposal: (proposal: Proposal) => void;
   updateProposal: (id: string, proposal: Partial<Proposal>) => void;
   deleteProposal: (id: string) => void;
   getProposal: (id: string) => Proposal | undefined;
+  setGeneratedProposal: (content: string) => void;
+  clearGeneratedProposal: () => void;
 }
 
 const useProposalStore = create<ProposalState>()(
   persist(
     (set, get) => ({
       proposals: [],
+      generatedProposal: null,
       addProposal: (proposal) =>
         set((state) => ({ proposals: [...state.proposals, proposal] })),
       updateProposal: (id, proposal) =>
@@ -35,6 +39,8 @@ const useProposalStore = create<ProposalState>()(
           proposals: state.proposals.filter((p) => p.id !== id),
         })),
       getProposal: (id) => get().proposals.find((p) => p.id === id),
+      setGeneratedProposal: (content) => set({ generatedProposal: content }),
+      clearGeneratedProposal: () => set({ generatedProposal: null }),
     }),
     {
       name: "proposal-storage",
