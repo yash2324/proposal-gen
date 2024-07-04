@@ -1,4 +1,3 @@
-// components/ProposalBtn.tsx
 "use client";
 
 import { useState, useEffect } from "react";
@@ -23,10 +22,23 @@ interface Template {
   thumbnail: string | null;
 }
 
+interface UserData {
+  email: string;
+  companyInfo: {
+    name: string;
+    address: string;
+    phone: string;
+    email: string;
+    logo?: string;
+    website: string;
+  };
+}
+
 export default function ProposalBtn() {
   const [isOpen, setIsOpen] = useState(false);
   const [proposalName, setProposalName] = useState("");
   const [templates, setTemplates] = useState<Template[]>([]);
+  const [userData, setUserData] = useState<UserData | null>(null);
   const router = useRouter();
 
   useEffect(() => {
@@ -34,6 +46,15 @@ export default function ProposalBtn() {
       .then((response) => response.json())
       .then((data) => setTemplates(data))
       .catch((error) => console.error("Error fetching templates:", error));
+
+    fetch("/api/user-data")
+      .then((response) => response.json())
+      .then((data) => {
+        if (data.success) {
+          setUserData(data.data);
+        }
+      })
+      .catch((error) => console.error("Error fetching user data:", error));
   }, []);
 
   const handleTemplateSelect = (templateId: string) => {
@@ -41,8 +62,27 @@ export default function ProposalBtn() {
       alert("Please enter a proposal name");
       return;
     }
+
+    if (!userData || !isValidUserData(userData)) {
+      alert("Please complete your user settings before creating a proposal.");
+      router.push("/user-settings");
+      return;
+    }
+
     router.push(
       `/editor?template=${templateId}&name=${encodeURIComponent(proposalName)}`
+    );
+  };
+
+  const isValidUserData = (data: UserData): boolean => {
+    return (
+      !!data.email &&
+      !!data.companyInfo &&
+      !!data.companyInfo.name &&
+      !!data.companyInfo.address &&
+      !!data.companyInfo.phone &&
+      !!data.companyInfo.email &&
+      !!data.companyInfo.website
     );
   };
 
@@ -72,7 +112,7 @@ export default function ProposalBtn() {
             >
               {template.thumbnail && (
                 <Image
-                  src={"placeholder.svg"}
+                  src={"sample.svg"}
                   alt={`${template.name} Template`}
                   width={300}
                   height={200}
