@@ -5,6 +5,7 @@ import { useRouter, useSearchParams } from "next/navigation";
 import dynamic from "next/dynamic";
 import useProposalStore from "@/stores/proposalStore";
 import { saveProposal } from "@/app/actions/saveProposal";
+import { getProposal } from "@/app/actions/getProposal";
 import "react-quill/dist/quill.bubble.css";
 import "@/styles/TextEditor.css";
 
@@ -45,11 +46,13 @@ export default function TextEditor() {
   const [templateId, setTemplateId] = useState("");
   const [content, setContent] = useState<string>("");
   const [isLoading, setIsLoading] = useState(true);
-  const { addProposal, updateProposal, getProposal } = useProposalStore();
+  const [error, setError] = useState<string | null>(null);
+  const { addProposal, updateProposal } = useProposalStore();
 
   useEffect(() => {
     const loadProposalData = async () => {
       setIsLoading(true);
+      setError(null);
       const proposalId = searchParams.get("id");
       const name = searchParams.get("name");
       const template = searchParams.get("template");
@@ -57,15 +60,20 @@ export default function TextEditor() {
       if (proposalId) {
         // Editing existing proposal
         setId(proposalId);
-        const existingProposal = getProposal(proposalId);
-
-        if (existingProposal) {
-          setTitle(existingProposal.title);
-          setTemplateId(existingProposal.templateId);
-          setContent(existingProposal.content);
+        try {
+          const existingProposal = await getProposal(proposalId);
+          if (existingProposal) {
+            setTitle(existingProposal.title);
+            setTemplateId(existingProposal.templateId);
+            setContent(existingProposal.content || "");
+          } else {
+            setError("Proposal not found");
+          }
+        } catch (error) {
+          console.error("Error fetching proposal:", error);
+          setError("Error fetching proposal");
         }
       } else if (template) {
-        // Creating new proposal from template
         setTemplateId(template);
         if (name) setTitle(decodeURIComponent(name));
         try {
@@ -83,7 +91,7 @@ export default function TextEditor() {
     };
 
     loadProposalData();
-  }, [searchParams, getProposal]);
+  }, [searchParams]);
 
   const handleSave = async (e: React.FormEvent) => {
     e.preventDefault();
