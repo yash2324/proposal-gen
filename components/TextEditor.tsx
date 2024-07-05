@@ -164,7 +164,7 @@ export default function TextEditor() {
     };
 
     loadProposalData();
-  }, [searchParams]);
+  }, [searchParams, clearGeneratedProposal, generatedProposal]);
 
   const handleSave = async (e: React.FormEvent) => {
     e.preventDefault();
