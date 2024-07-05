@@ -5,7 +5,7 @@ import { processProposalWithAI } from "../../utils/aiMiddleware";
 const openai = new OpenAI({
   apiKey: process.env.OPENAI_API_KEY,
 });
-
+export const maxDuration = 20;
 export async function POST(request: Request) {
   try {
     const body = await request.json();
