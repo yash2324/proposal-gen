@@ -132,7 +132,6 @@ const useFormStore = create<FormState>((set) => ({
   setPricingSection: (pricingSection) => set({ pricingSection }),
   setAllData: (data) =>
     set((state) => {
-      console.log("Setting all data in store:", data);
       return data;
     }),
 }));

@@ -28,7 +28,6 @@ export default function MainForm({ initialData }: { initialData: any }) {
 
   useEffect(() => {
     if (initialData) {
-      console.log("Initial data received:", initialData);
       setAllData(initialData);
     }
   }, [initialData, setAllData]);

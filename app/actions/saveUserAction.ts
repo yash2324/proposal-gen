@@ -22,7 +22,6 @@ export async function saveUserData(data: UserData) {
     }
 
     const sessionEmail = session.user.email;
-    console.log("Session email:", sessionEmail);
 
     const user = await prisma.user.findUnique({
       where: { email: sessionEmail },
@@ -33,8 +32,6 @@ export async function saveUserData(data: UserData) {
       console.error("User not found in database:", sessionEmail);
       return { success: false, error: "User not found" };
     }
-
-    console.log("User found:", user.id);
 
     const { companyInfo, testimonials, projects, pricingSection, teamMembers } =
       data;
@@ -135,7 +132,6 @@ export async function saveUserData(data: UserData) {
       return { company: companyInfoRecord };
     });
 
-    console.log("Data saved successfully");
     return { success: true, company: result.company };
   } catch (error: unknown) {
     console.error("Error in saveUserData:", error);

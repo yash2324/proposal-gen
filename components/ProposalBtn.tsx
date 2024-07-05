@@ -16,6 +16,7 @@ import { useRouter } from "next/navigation";
 import Image from "next/image";
 import useProposalStore from "@/stores/proposalStore";
 import { AiLoading } from "@/components/AiLoading";
+import { useToast } from "./ui/use-toast";
 interface Template {
   id: string;
   name: string;
@@ -36,6 +37,7 @@ interface UserData {
 }
 
 export default function ProposalBtn() {
+  const { toast } = useToast();
   const [isOpen, setIsOpen] = useState(false);
   const [isGenerating, setIsGenerating] = useState(false);
   const [proposalName, setProposalName] = useState("");
@@ -67,29 +69,28 @@ export default function ProposalBtn() {
 
   const handleTemplateSelect = async (templateId: string) => {
     if (!proposalName.trim()) {
-      alert("Please enter a proposal name");
+      toast({ title: "Please enter a proposal name" });
+
       return;
     }
 
     if (!userData || !userData.companyInfo || !userData.companyInfo.name) {
-      alert("Please complete your user settings before creating a proposal.");
+      toast({
+        title: "Please complete your user settings before creating a proposal.",
+      });
       router.push("/user-settings");
       return;
     }
     setIsGenerating(true);
-    console.log("is generating", isGenerating);
+
     try {
-      console.log("Fetching template content...");
       const response = await fetch(`/api/templates/${templateId}`);
       if (!response.ok) {
         throw new Error(`Failed to fetch template: ${response.statusText}`);
       }
       const data = await response.json();
       const templateContent = data.content;
-      console.log("Template content:", templateContent);
 
-      console.log("Generating proposal...");
-      console.log("User data:", userData);
       const proposalResponse = await fetch("/api/generate-proposal", {
         method: "POST",
         headers: {
@@ -102,11 +103,7 @@ export default function ProposalBtn() {
       }
 
       const proposalData = await proposalResponse.json();
-      console.log("Proposal generated successfully");
 
-      // Here, you might want to save the  or pass it to the editor
-      // For now, we'll just navigate to the editor
-      console.log("Navigating to editor...");
       setGeneratedProposal(proposalData.proposal);
       router.push(
         `/editor?template=${templateId}&name=${encodeURIComponent(
@@ -115,9 +112,10 @@ export default function ProposalBtn() {
       );
     } catch (error: any) {
       console.error("Error processing proposal:", error);
-      alert(
-        `An error occurred while processing the proposal: ${error.message}`
-      );
+      toast({
+        title: "Error processing proposal",
+        description: `An error occurred : ${error.message}`,
+      });
     } finally {
       setTimeout(() => setIsGenerating(false), 1000);
     }

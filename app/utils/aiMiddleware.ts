@@ -48,7 +48,6 @@ export async function processProposalWithAI(
   userData: any,
   openai: OpenAI
 ) {
-  console.log(userData, "user data");
   if (!templateContent) {
     throw new Error("Template content is missing");
   }
@@ -56,7 +55,6 @@ export async function processProposalWithAI(
     throw new Error("User data is missing");
   }
 
-  console.log("Processing proposal with:", { templateContent, userData });
   const { anonymizedData, map } = anonymizeData(userData);
 
   const prompt = `
@@ -102,15 +100,9 @@ export async function processProposalWithAI(
     let generatedContent = completion.choices[0].message.content || "";
     console.log("AI output:", generatedContent);
 
-    // Efficiently replace placeholders with actual values
     for (const [placeholder, value] of map.entries()) {
       generatedContent = generatedContent.split(placeholder).join(value);
     }
-
-    // Ensure the generated content is properly formatted
-    // if (!generatedContent.trim().startsWith("<")) {
-    //   generatedContent = `<div class="ql-editor">${generatedContent}</div>`;
-    // }
 
     return generatedContent;
   } catch (error) {

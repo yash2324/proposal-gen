@@ -9,7 +9,6 @@ const openai = new OpenAI({
 export async function POST(request: Request) {
   try {
     const body = await request.json();
-    console.log("Received request body:", body);
 
     const { templateContent, userData } = body;
 
@@ -19,8 +18,6 @@ export async function POST(request: Request) {
     if (!userData) {
       throw new Error("Missing userData");
     }
-
-    console.log("Processing with:", { templateContent, userData });
 
     const generatedProposal = await processProposalWithAI(
       templateContent,
