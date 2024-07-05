@@ -2,7 +2,7 @@ import { NextResponse } from "next/server";
 import prisma from "../../../lib/prismadb"; // Adjust the import path as needed
 import { getServerSession } from "next-auth/next";
 import { authOptions } from "../../../lib/AuthOptions";
-
+export const dynamic = "force-dynamic";
 export async function GET() {
   try {
     const session = await getServerSession(authOptions);
