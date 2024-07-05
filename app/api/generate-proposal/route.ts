@@ -1,6 +1,6 @@
 import { NextResponse } from "next/server";
 import OpenAI from "openai";
-import { processProposalWithAI } from "../../../utils/aiMiddleware";
+import { processProposalWithAI } from "../../utils/aiMiddleware";
 
 const openai = new OpenAI({
   apiKey: process.env.OPENAI_API_KEY,
