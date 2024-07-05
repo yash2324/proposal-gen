@@ -5,7 +5,7 @@ import React, { useEffect, useState } from "react";
 import { useParams } from "next/navigation";
 import useProposalStore from "../../../stores/proposalStore";
 import "react-quill/dist/quill.snow.css";
-
+import "@/styles/TextEditor.css";
 export default function ProposalPage() {
   interface Proposal {
     id: string;

@@ -2,7 +2,7 @@
 
 import { signIn, signOut } from "next-auth/react";
 import React, { useEffect, useState } from "react";
-import toast from "react-hot-toast";
+
 import {
   Card,
   CardHeader,
@@ -13,6 +13,7 @@ import {
 import { Label } from "@/components/ui/label";
 import { Input } from "@/components/ui/input";
 import { Button } from "@/components/ui/button";
+import { useToast } from "@/components/ui/use-toast";
 
 export default function LoginForm() {
   useEffect(() => {
@@ -20,7 +21,7 @@ export default function LoginForm() {
       redirect: false,
     });
   }, []);
-
+  const { toast } = useToast();
   const [email, setEmail] = useState("");
   const [password, setPassword] = useState("");
 
@@ -36,10 +37,10 @@ export default function LoginForm() {
     });
 
     if (login?.ok) {
-      toast.success("Correct login");
+      toast({ title: "Correct login" });
       window.location.assign("/");
     } else if (login?.error) {
-      toast.error(login?.error);
+      toast({ title: "Error! Please Try Again" });
     }
 
     setLoading(false);

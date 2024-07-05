@@ -15,6 +15,7 @@ import {
 import { Label } from "@/components/ui/label";
 import { Input } from "@/components/ui/input";
 import { Button } from "@/components/ui/button";
+import { useToast } from "@/components/ui/use-toast";
 
 export default function RegisterForm() {
   useEffect(() => {
@@ -22,7 +23,7 @@ export default function RegisterForm() {
       redirect: false,
     });
   }, []);
-
+  const { toast } = useToast();
   const [email, setEmail] = useState("");
   const [password, setPassword] = useState("");
 
@@ -38,12 +39,12 @@ export default function RegisterForm() {
         password,
       });
 
-      toast.success("Successfully registered");
+      toast({ title: "Successfully registered" });
 
       router.push("/signin");
     } catch (err: any) {
       console.log(err);
-      toast.error(err?.response?.data);
+      toast({ title: err?.response?.data });
     } finally {
       setLoading(false);
     }

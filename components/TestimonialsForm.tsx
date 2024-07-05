@@ -58,6 +58,7 @@ const TestimonialsForm = () => {
             company: "",
           })
         }
+        type="button"
         variant="outline"
       >
         Add Testimonial

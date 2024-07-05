@@ -10,6 +10,7 @@ import PricingSectionForm from "./PricingSectionForm";
 import useFormStore from "../stores/formStore";
 import { useSession } from "next-auth/react";
 import { saveUserData } from "../app/actions/saveUserAction";
+import { useToast } from "./ui/use-toast";
 
 export default function MainForm({ initialData }: { initialData: any }) {
   const {
@@ -22,6 +23,7 @@ export default function MainForm({ initialData }: { initialData: any }) {
     pricingSection,
     setAllData,
   } = useFormStore();
+  const { toast } = useToast();
   const { data: session } = useSession();
 
   useEffect(() => {
@@ -49,11 +51,19 @@ export default function MainForm({ initialData }: { initialData: any }) {
     try {
       const result = await saveUserData(data);
       if (result.success) {
-        console.log("Data saved successfully:", result.company);
+        toast({
+          title: "Data saved successfully",
+        });
       } else {
+        toast({
+          title: "Error saving data",
+        });
         console.error("Error saving data:", result.error);
       }
     } catch (error) {
+      toast({
+        title: "Error saving data",
+      });
       console.error("Error submitting form:", error);
     }
   };

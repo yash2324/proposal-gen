@@ -9,10 +9,42 @@ import { getProposal } from "@/app/actions/getProposal";
 import "react-quill/dist/quill.bubble.css";
 import "@/styles/TextEditor.css";
 
-const ReactQuill = dynamic(() => import("react-quill"), {
-  ssr: false,
-  loading: () => <p>Loading editor...</p>,
-});
+const ReactQuill = dynamic(
+  async () => {
+    const { default: RQ } = await import("react-quill");
+    if (typeof window !== "undefined") {
+      const Quill = require("quill");
+      const Block = Quill.import("blots/block");
+
+      class CustomBlock extends Block {
+        static create(value: any) {
+          const node = super.create();
+          if (value && typeof value === "object" && value.class) {
+            node.setAttribute("class", value.class);
+          }
+          return node;
+        }
+
+        static formats(node: any) {
+          const format: { class?: string } = {};
+          if (node.hasAttribute("class")) {
+            format.class = node.getAttribute("class");
+          }
+          return format;
+        }
+      }
+
+      CustomBlock.blotName = "custom-block";
+      CustomBlock.tagName = "DIV";
+      Quill.register(CustomBlock, true);
+    }
+    return RQ;
+  },
+  {
+    ssr: false,
+    loading: () => <p>Loading editor...</p>,
+  }
+);
 
 const modules = {
   toolbar: [
@@ -23,6 +55,29 @@ const modules = {
     ["link", "image"],
     ["clean"],
   ],
+  clipboard: {
+    matchVisual: false,
+    matchers: [
+      [
+        "DIV",
+        function (
+          node: { getAttribute: (arg0: string) => any },
+          delta: { ops: any[] }
+        ) {
+          const className = node.getAttribute("class");
+          if (className) {
+            delta.ops.forEach((op) => {
+              if (op.insert && typeof op.insert === "string") {
+                op.attributes = op.attributes || {};
+                op.attributes["custom-block"] = { class: className };
+              }
+            });
+          }
+          return delta;
+        },
+      ],
+    ],
+  },
 };
 
 const formats = [
@@ -36,6 +91,14 @@ const formats = [
   "link",
   "image",
   "align",
+  "class",
+  "indent",
+  "blockquote",
+  "table",
+  "color",
+  "background",
+  "font",
+  "size",
 ];
 
 export default function TextEditor() {

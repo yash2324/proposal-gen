@@ -48,6 +48,7 @@ const TeamMembersForm = () => {
         onClick={() =>
           addTeamMember({ id: Date.now().toString(), name: "", position: "" })
         }
+        type="button"
       >
         Add Team Member
       </Button>

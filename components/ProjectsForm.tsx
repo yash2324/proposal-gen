@@ -40,6 +40,7 @@ const ProjectsForm = () => {
           addProject({ id: generateId(), name: "", description: "" })
         }
         variant="outline"
+        type="button"
       >
         Add Project
       </Button>

@@ -1,45 +1,54 @@
 import OpenAI from "openai";
 
-function sanitizeData(data: any): any {
-  if (typeof data !== "object" || data === null) {
-    return data;
-  }
+const anonymizeData = (data: any) => {
+  const map = new Map();
+  let counter = 0;
 
-  const sanitized: any = {};
-  for (const [key, value] of Object.entries(data)) {
-    if (Array.isArray(value)) {
-      sanitized[key] = value.map((item) => sanitizeData(item));
-    } else if (typeof value === "object" && value !== null) {
-      sanitized[key] = sanitizeData(value);
-    } else if (key === "name" || key === "email" || key === "phone") {
-      sanitized[key] = `[${key.toUpperCase()}]`;
-    } else {
-      sanitized[key] = value;
+  const replaceSensitiveInfo = (obj: any): any => {
+    if (typeof obj === "string" && obj.includes("@")) {
+      const placeholder = `[EMAIL_${counter++}]`;
+      map.set(placeholder, obj);
+      return placeholder;
     }
-  }
-  return sanitized;
-}
-function replaceTokens(text: string, data: any): string {
-  for (const [key, value] of Object.entries(data)) {
-    if (Array.isArray(value)) {
-      value.forEach((item, index) => {
-        text = replaceTokens(text, { [`${key}_${index}`]: item });
-      });
-    } else if (typeof value === "object" && value !== null) {
-      text = replaceTokens(text, value);
-    } else {
-      const regex = new RegExp(`\\[${key.toUpperCase()}\\]`, "g");
-      text = text.replace(regex, value as string);
+    if (typeof obj === "string" && obj.includes("http")) {
+      const placeholder = `[URL_${counter++}]`;
+      map.set(placeholder, obj);
+      return placeholder;
     }
-  }
-  return text;
-}
+    if (typeof obj === "string" && /\d{2,}/.test(obj)) {
+      const placeholder = `[NUMBER_${counter++}]`;
+      map.set(placeholder, obj);
+      return placeholder;
+    }
+    if (typeof obj === "string") {
+      const placeholder = `[TEXT_${counter++}]`;
+      map.set(placeholder, obj);
+      return placeholder;
+    }
+    if (Array.isArray(obj)) {
+      return obj.map(replaceSensitiveInfo);
+    }
+    if (typeof obj === "object" && obj !== null) {
+      return Object.fromEntries(
+        Object.entries(obj).map(([key, value]) => [
+          key,
+          replaceSensitiveInfo(value),
+        ])
+      );
+    }
+    return obj;
+  };
+
+  const anonymizedData = replaceSensitiveInfo(data);
+  return { anonymizedData, map };
+};
 
 export async function processProposalWithAI(
   templateContent: string,
   userData: any,
   openai: OpenAI
 ) {
+  console.log(userData, "user data");
   if (!templateContent) {
     throw new Error("Template content is missing");
   }
@@ -47,61 +56,32 @@ export async function processProposalWithAI(
     throw new Error("User data is missing");
   }
 
-  // Log the input data
   console.log("Processing proposal with:", { templateContent, userData });
-
-  const sanitizedUserData = sanitizeData(userData);
-  console.log("Sanitized user data:", sanitizedUserData);
-  const pricingData =
-    sanitizedUserData?.pricingSection?.items?.map(
-      (item: any, index: number) => ({
-        description: item.description,
-        amount: `[PRICE_${index}]`,
-      })
-    ) || [];
+  const { anonymizedData, map } = anonymizeData(userData);
 
   const prompt = `
-    You are a professional proposal writer. Your task is to generate a detailed proposal based on the given template and user data. Fill in the placeholders with appropriate content, expand on the ideas, and ensure the proposal is coherent and professional.
+  You are a professional proposal writer. Your task is to generate a detailed proposal based on the given data.
 
-    Template:
-    ${templateContent}
+  Data:
+  ${JSON.stringify(anonymizedData)}
 
-    User Data:
-    Company Info: ${JSON.stringify(sanitizedUserData.companyInfo, null, 2)}
-    
-    Executive Summary: ${
-      sanitizedUserData.companyInfo.executiveSummary || "[EXECUTIVE_SUMMARY]"
-    }
+  Generate a proposal including sections for executive summary, company info, testimonials, projects, pricing, and team members. Format the output as an HTML component . Dont give me the whole boiler plate with styles and everything just refer to the example and generate similar tags with everything required.Do not include \`\`\`html or \`\`\` tags at the start or end of the response.
 
-    Testimonials: ${JSON.stringify(sanitizedUserData.testimonials, null, 2)}
+  Ensure the Output:
+  - Does not use excessive <br> tags.
+  - Sizes the logo appropriately.
+  - You can add sections like Next Steps , Why we are better , Strategy,Dissemination,Project Activity, Methodology and Outcomes,Abstract/Summary etc. on a non specific manner to make the proposal more detailed.
+  - Formats text clearly and concisely.
+  - Wherever you have to include pricing data use the following format for the pricing table:  <p>Basic Package: <p class="ql-align-right">$5,000</p></p>
+  <p>Pro Package: <p class="ql-align-right">$10,000</p></p>
+  <p>Enterprise Package: <p class="ql-align-right">$20,000</p></p>
+  <p><strong>Total: <p class="ql-align-right">$35,000</p></strong></p>
+  Do not use other tags like span or div for the pricing table.
+  - Do not include \`\`\`html or \`\`\` tags at the start or end of the response.
+  Example:
+  ${templateContent}
+`;
 
-    Projects: ${JSON.stringify(sanitizedUserData.projects, null, 2)}
-
-    Team Members: ${JSON.stringify(
-      sanitizedUserData.teamMembers.map((member: any) => ({
-        position: member.position,
-        bio: member.bio,
-      })),
-      null,
-      2
-    )}
-
-    Pricing: ${JSON.stringify(pricingData, null, 2)}
-
-    Instructions:
-    1. Use the provided template as a structure for the proposal.
-    2. Fill in the placeholders (e.g., [COMPANY_NAME], [TEAM_MEMBER_0_NAME]) with appropriate content based on the user data.
-    3. Expand on the ideas and add relevant details to make the proposal comprehensive and persuasive.
-    4. Maintain a professional tone throughout the document.
-    5. Do not invent or hallucinate any specific financial figures or company details not provided in the user data.
-    6. If you need more information for a section, use general, non-specific language instead of making up details.
-    7. Ensure that your response is in HTML format, compatible with the Quill rich text editor.
-    8. Preserve all HTML tags and classes from the original template.
-    9. Use appropriate HTML tags for formatting (e.g., <p>, <h1>, <h2>, <ul>, <li>, etc.).
-    10. For pricing, use placeholders like [PRICE_0], [PRICE_1], etc., which will be replaced later with actual prices.
-
-    Please generate the complete proposal based on these instructions, maintaining the HTML structure of the template.
-  `;
   console.log("Prompt:", prompt);
 
   try {
@@ -120,27 +100,17 @@ export async function processProposalWithAI(
     }
 
     let generatedContent = completion.choices[0].message.content || "";
+    console.log("AI output:", generatedContent);
 
-    // Add null checks before using userData
-    if (userData && userData.data) {
-      generatedContent = replaceTokens(generatedContent, userData.data);
-
-      if (userData.data.pricingSection && userData.data.pricingSection.items) {
-        userData.data.pricingSection.items.forEach(
-          (item: any, index: number) => {
-            const regex = new RegExp(`\\[PRICE_${index}\\]`, "g");
-            generatedContent = generatedContent.replace(
-              regex,
-              item.amount ? item.amount.toString() : "[PRICE]"
-            );
-          }
-        );
-      }
+    // Efficiently replace placeholders with actual values
+    for (const [placeholder, value] of map.entries()) {
+      generatedContent = generatedContent.split(placeholder).join(value);
     }
 
-    if (!generatedContent.trim().startsWith("<")) {
-      generatedContent = `<div class="ql-editor">${generatedContent}</div>`;
-    }
+    // Ensure the generated content is properly formatted
+    // if (!generatedContent.trim().startsWith("<")) {
+    //   generatedContent = `<div class="ql-editor">${generatedContent}</div>`;
+    // }
 
     return generatedContent;
   } catch (error) {

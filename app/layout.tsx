@@ -6,6 +6,7 @@ import React from "react";
 import "./globals.css";
 import "react-quill/dist/quill.snow.css";
 import NextAuthSessionProvider from "@/providers/NextAuthSessionProvider";
+import { Toaster } from "@/components/ui/toaster";
 
 const inter = Inter({ subsets: ["latin"] });
 
@@ -24,6 +25,7 @@ export default async function ProtectedRootLayout({
         <NextAuthSessionProvider session={session}>
           {session && <Header />}
           <main className="container mb-4">{children}</main>
+          <Toaster />
         </NextAuthSessionProvider>
       </body>
     </html>

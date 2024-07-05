@@ -54,7 +54,7 @@ const PricingSectionForm = () => {
           </div>
         </div>
       ))}
-      <Button variant={"outline"} onClick={addItem}>
+      <Button variant={"outline"} onClick={addItem} type="button">
         Add Item
       </Button>
       <div>
