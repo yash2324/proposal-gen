@@ -1,4 +1,5 @@
 import { create } from "zustand";
+import { devtools } from "zustand/middleware";
 
 const generateId = () => Math.random().toString(36).substr(2, 9);
 
@@ -81,59 +82,61 @@ interface FormState {
   }) => void;
 }
 
-const useFormStore = create<FormState>((set) => ({
-  email: "",
-  setEmail: (email) => set({ email }),
-  companyInfo: { name: "", address: "", phone: "", email: "", website: "" },
-  testimonials: [{ id: generateId(), name: "", content: "", company: "" }],
-  projects: [{ id: generateId(), name: "", description: "" }],
-  teamMembers: [{ id: generateId(), name: "", position: "" }],
-  proposals: [{ id: generateId(), title: "", templateId: "", images: [] }],
-  pricingSection: { items: [], totalAmount: 0, currency: "USD" },
-  setCompanyInfo: (info) => set({ companyInfo: info }),
-  addTestimonial: (testimonial) =>
-    set((state) => ({ testimonials: [...state.testimonials, testimonial] })),
-  updateTestimonial: (index, testimonial) =>
-    set((state) => {
-      const updatedTestimonials = [...state.testimonials];
-      updatedTestimonials[index] = {
-        ...updatedTestimonials[index],
-        ...testimonial,
-      };
-      return { testimonials: updatedTestimonials };
-    }),
-  addProject: (project) =>
-    set((state) => ({ projects: [...state.projects, project] })),
-  updateProject: (index, project) =>
-    set((state) => {
-      const updatedProjects = [...state.projects];
-      updatedProjects[index] = { ...updatedProjects[index], ...project };
-      return { projects: updatedProjects };
-    }),
-  addTeamMember: (teamMember) =>
-    set((state) => ({ teamMembers: [...state.teamMembers, teamMember] })),
-  updateTeamMember: (index, teamMember) =>
-    set((state) => {
-      const updatedTeamMembers = [...state.teamMembers];
-      updatedTeamMembers[index] = {
-        ...updatedTeamMembers[index],
-        ...teamMember,
-      };
-      return { teamMembers: updatedTeamMembers };
-    }),
-  addProposal: (proposal) =>
-    set((state) => ({ proposals: [...state.proposals, proposal] })),
-  updateProposal: (index, proposal) =>
-    set((state) => {
-      const updatedProposals = [...state.proposals];
-      updatedProposals[index] = { ...updatedProposals[index], ...proposal };
-      return { proposals: updatedProposals };
-    }),
-  setPricingSection: (pricingSection) => set({ pricingSection }),
-  setAllData: (data) =>
-    set((state) => {
-      return data;
-    }),
-}));
+const useFormStore = create(
+  devtools<FormState>((set) => ({
+    email: "",
+    setEmail: (email) => set({ email }),
+    companyInfo: { name: "", address: "", phone: "", email: "", website: "" },
+    testimonials: [{ id: generateId(), name: "", content: "", company: "" }],
+    projects: [{ id: generateId(), name: "", description: "" }],
+    teamMembers: [{ id: generateId(), name: "", position: "" }],
+    proposals: [{ id: generateId(), title: "", templateId: "", images: [] }],
+    pricingSection: { items: [], totalAmount: 0, currency: "USD" },
+    setCompanyInfo: (info) => set({ companyInfo: info }),
+    addTestimonial: (testimonial) =>
+      set((state) => ({ testimonials: [...state.testimonials, testimonial] })),
+    updateTestimonial: (index, testimonial) =>
+      set((state) => {
+        const updatedTestimonials = [...state.testimonials];
+        updatedTestimonials[index] = {
+          ...updatedTestimonials[index],
+          ...testimonial,
+        };
+        return { testimonials: updatedTestimonials };
+      }),
+    addProject: (project) =>
+      set((state) => ({ projects: [...state.projects, project] })),
+    updateProject: (index, project) =>
+      set((state) => {
+        const updatedProjects = [...state.projects];
+        updatedProjects[index] = { ...updatedProjects[index], ...project };
+        return { projects: updatedProjects };
+      }),
+    addTeamMember: (teamMember) =>
+      set((state) => ({ teamMembers: [...state.teamMembers, teamMember] })),
+    updateTeamMember: (index, teamMember) =>
+      set((state) => {
+        const updatedTeamMembers = [...state.teamMembers];
+        updatedTeamMembers[index] = {
+          ...updatedTeamMembers[index],
+          ...teamMember,
+        };
+        return { teamMembers: updatedTeamMembers };
+      }),
+    addProposal: (proposal) =>
+      set((state) => ({ proposals: [...state.proposals, proposal] })),
+    updateProposal: (index, proposal) =>
+      set((state) => {
+        const updatedProposals = [...state.proposals];
+        updatedProposals[index] = { ...updatedProposals[index], ...proposal };
+        return { proposals: updatedProposals };
+      }),
+    setPricingSection: (pricingSection) => set({ pricingSection }),
+    setAllData: (data) =>
+      set((state) => {
+        return data;
+      }),
+  }))
+);
 
 export default useFormStore;

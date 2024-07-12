@@ -1,4 +1,3 @@
-// app/proposals/[id]/page.tsx
 "use client";
 
 import React, { useEffect, useState } from "react";
@@ -15,15 +14,26 @@ export default function ProposalPage() {
     images?: string[];
   }
   const params = useParams();
-  const { getProposal } = useProposalStore();
+  const getProposal = async (id: string) => {
+    const response = await fetch(`/api/proposals/${id}`);
+    if (response.ok) {
+      const proposal = await response.json();
+      return proposal;
+    }
+    return null;
+  };
   const [proposal, setProposal] = useState<Proposal | null>(null);
 
   useEffect(() => {
-    if (params.id) {
-      const fetchedProposal = getProposal(params.id as string);
-      setProposal(fetchedProposal || null);
-    }
-  }, [params.id, getProposal]);
+    const fetchData = async () => {
+      if (params.id) {
+        const fetchedProposal = await getProposal(params.id as string);
+        setProposal(fetchedProposal || null);
+      }
+    };
+
+    fetchData();
+  }, [params.id]);
 
   if (!proposal) {
     return <div>Loading...</div>;

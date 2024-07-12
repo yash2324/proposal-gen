@@ -1,6 +1,6 @@
 // stores/proposalStore.ts
 import { create } from "zustand";
-import { persist } from "zustand/middleware";
+import { devtools, persist } from "zustand/middleware";
 
 interface Proposal {
   id: string;
@@ -22,29 +22,31 @@ interface ProposalState {
 }
 
 const useProposalStore = create<ProposalState>()(
-  persist(
-    (set, get) => ({
-      proposals: [],
-      generatedProposal: null,
-      addProposal: (proposal) =>
-        set((state) => ({ proposals: [...state.proposals, proposal] })),
-      updateProposal: (id, proposal) =>
-        set((state) => ({
-          proposals: state.proposals.map((p) =>
-            p.id === id ? { ...p, ...proposal } : p
-          ),
-        })),
-      deleteProposal: (id) =>
-        set((state) => ({
-          proposals: state.proposals.filter((p) => p.id !== id),
-        })),
-      getProposal: (id) => get().proposals.find((p) => p.id === id),
-      setGeneratedProposal: (content) => set({ generatedProposal: content }),
-      clearGeneratedProposal: () => set({ generatedProposal: null }),
-    }),
-    {
-      name: "proposal-storage",
-    }
+  devtools(
+    persist(
+      (set, get) => ({
+        proposals: [],
+        generatedProposal: null,
+        addProposal: (proposal) =>
+          set((state) => ({ proposals: [...state.proposals, proposal] })),
+        updateProposal: (id, proposal) =>
+          set((state) => ({
+            proposals: state.proposals.map((p) =>
+              p.id === id ? { ...p, ...proposal } : p
+            ),
+          })),
+        deleteProposal: (id) =>
+          set((state) => ({
+            proposals: state.proposals.filter((p) => p.id !== id),
+          })),
+        getProposal: (id) => get().proposals.find((p) => p.id === id),
+        setGeneratedProposal: (content) => set({ generatedProposal: content }),
+        clearGeneratedProposal: () => set({ generatedProposal: null }),
+      }),
+      {
+        name: "proposal-storage",
+      }
+    )
   )
 );
 
