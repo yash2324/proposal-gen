@@ -2,7 +2,7 @@
 
 import React, { useEffect, useState } from "react";
 import { useParams } from "next/navigation";
-import useProposalStore from "../../../stores/proposalStore";
+import { getProposal } from "../../actions/getProposal";
 import "react-quill/dist/quill.snow.css";
 import "@/styles/TextEditor.css";
 export default function ProposalPage() {
@@ -10,25 +10,18 @@ export default function ProposalPage() {
     id: string;
     title: string;
     templateId: string;
-    content: string;
+    content: string | null;
     images?: string[];
   }
   const params = useParams();
-  const getProposal = async (id: string) => {
-    const response = await fetch(`/api/proposals/${id}`);
-    if (response.ok) {
-      const proposal = await response.json();
-      return proposal;
-    }
-    return null;
-  };
+
   const [proposal, setProposal] = useState<Proposal | null>(null);
 
   useEffect(() => {
     const fetchData = async () => {
       if (params.id) {
         const fetchedProposal = await getProposal(params.id as string);
-        setProposal(fetchedProposal || null);
+        setProposal(fetchedProposal);
       }
     };
 
@@ -45,7 +38,7 @@ export default function ProposalPage() {
       <div className="ql-snow">
         <div
           className="ql-editor"
-          dangerouslySetInnerHTML={{ __html: proposal.content }}
+          dangerouslySetInnerHTML={{ __html: proposal.content || "" }}
         />
       </div>
     </div>
