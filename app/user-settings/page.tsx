@@ -9,5 +9,9 @@ export default async function UserSettingsPage() {
     initialData = result.data;
   }
 
-  return <MainForm initialData={initialData} />;
+  return (
+    <div className="mx-5">
+      <MainForm initialData={initialData} />
+    </div>
+  );
 }

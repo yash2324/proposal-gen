@@ -1,10 +1,9 @@
 import { NextResponse } from "next/server";
 import OpenAI from "openai";
 import { processProposalWithAI } from "../../utils/aiMiddleware";
+import Groq from "groq-sdk";
 
-const openai = new OpenAI({
-  apiKey: process.env.OPENAI_API_KEY,
-});
+const groq = new Groq({ apiKey: process.env.GROQ_API_KEY });
 export const maxDuration = 20;
 export async function POST(request: Request) {
   try {
@@ -22,7 +21,7 @@ export async function POST(request: Request) {
     const generatedProposal = await processProposalWithAI(
       templateContent,
       userData,
-      openai
+      groq
     );
 
     console.log("Generated proposal:", generatedProposal);

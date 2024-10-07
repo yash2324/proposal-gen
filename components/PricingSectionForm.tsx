@@ -29,7 +29,10 @@ const PricingSectionForm = () => {
   };
 
   return (
-    <div id="pricing-section" className="space-y-4">
+    <div
+      id="pricing-section"
+      className="space-y-6 bg-white p-6 rounded-lg shadow-md"
+    >
       <h3 className="text-xl font-bold">Pricing Section</h3>
       {pricingSection.items.map((item, index) => (
         <div key={index} className="space-y-2 border p-4 rounded">

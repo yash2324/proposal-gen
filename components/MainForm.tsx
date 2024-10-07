@@ -52,85 +52,77 @@ export default function MainForm({ initialData }: { initialData: any }) {
       if (result.success) {
         toast({
           title: "Data saved successfully",
+          description: "Your changes have been saved.",
+          duration: 3000,
         });
       } else {
         toast({
           title: "Error saving data",
+          description: "Please try again later.",
+          variant: "destructive",
         });
         console.error("Error saving data:", result.error);
       }
     } catch (error) {
       toast({
         title: "Error saving data",
+        description: "An unexpected error occurred. Please try again.",
+        variant: "destructive",
       });
       console.error("Error submitting form:", error);
     }
   };
 
+  const scrollToSection = (id: string) => {
+    const element = document.getElementById(id);
+    if (element) {
+      element.scrollIntoView({ behavior: "smooth" });
+    }
+  };
+
   return (
-    <div className="flex flex-col md:flex-row bg-white text-black">
-      <aside className="hidden md:block w-full md:w-1/4 p-4 border-r">
-        <h2 className="text-2xl font-bold mb-2">User Settings</h2>
-        <p className="text-sm text-muted-foreground mb-4">
+    <div className="flex flex-col md:flex-row bg-gradient-to-br from-amber-50 to-orange-100 min-h-screen">
+      <aside className="md:w-1/4 bg-white p-6 md:sticky md:top-0 md:h-screen overflow-auto">
+        <h2 className="text-2xl font-bold mb-4 text-gray-800">User Settings</h2>
+        <p className="text-sm text-gray-600 mb-6">
           Manage your company info and proposal preferences.
         </p>
         <nav className="space-y-2">
-          <Button
-            variant="outline"
-            className="w-full text-left"
-            onClick={() =>
-              document.getElementById("company-info")?.scrollIntoView()
-            }
-          >
-            Company Info
-          </Button>
-          <Button
-            variant="outline"
-            className="w-full text-left"
-            onClick={() =>
-              document.getElementById("testimonials")?.scrollIntoView()
-            }
-          >
-            Testimonials
-          </Button>
-          <Button
-            variant="outline"
-            className="w-full text-left"
-            onClick={() =>
-              document.getElementById("projects")?.scrollIntoView()
-            }
-          >
-            Projects
-          </Button>
-          <Button
-            variant="outline"
-            className="w-full text-left"
-            onClick={() =>
-              document.getElementById("team-members")?.scrollIntoView()
-            }
-          >
-            Team Members
-          </Button>
-          <Button
-            variant="outline"
-            className="w-full text-left"
-            onClick={() =>
-              document.getElementById("pricing-section")?.scrollIntoView()
-            }
-          >
-            Pricing
-          </Button>
+          {[
+            "company-info",
+            "testimonials",
+            "projects",
+            "team-members",
+            "pricing-section",
+          ].map((section) => (
+            <Button
+              key={section}
+              variant="ghost"
+              className="w-full justify-start text-left hover:bg-orange-100 hover:text-orange-700 transition-colors"
+              onClick={() => scrollToSection(section)}
+            >
+              {section
+                .split("-")
+                .map((word) => word.charAt(0).toUpperCase() + word.slice(1))
+                .join(" ")}
+            </Button>
+          ))}
         </nav>
       </aside>
-      <main className="flex-1 p-4">
-        <form onSubmit={handleSubmit} className="space-y-8">
+      <main className="flex-1 p-6 md:p-10">
+        <form onSubmit={handleSubmit} className="space-y-10 max-w-3xl mx-auto">
           <CompanyInfoForm />
           <TestimonialsForm />
           <ProjectsForm />
           <TeamMembersForm />
           <PricingSectionForm />
-          <div className="mt-4">
-            <Button type="submit">Save Changes</Button>
+          <div className="mt-8">
+            <Button
+              type="submit"
+              className="w-full md:w-auto bg-gradient-to-r from-orange-500 to-red-600 hover:from-orange-600 hover:to-red-700 text-white font-semibold py-2 px-6 rounded-full shadow-md hover:shadow-lg transition duration-300"
+            >
+              Save Changes
+            </Button>
           </div>
         </form>
       </main>

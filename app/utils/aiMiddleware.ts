@@ -1,5 +1,5 @@
 import OpenAI from "openai";
-
+import Groq from "groq-sdk";
 const anonymizeData = (data: any) => {
   const map = new Map();
   let counter = 0;
@@ -46,7 +46,7 @@ const anonymizeData = (data: any) => {
 export async function processProposalWithAI(
   templateContent: string,
   userData: any,
-  openai: OpenAI
+  groq: any
 ) {
   if (!templateContent) {
     throw new Error("Template content is missing");
@@ -66,6 +66,8 @@ export async function processProposalWithAI(
   Generate a proposal including sections for executive summary, company info, testimonials, projects, pricing, and team members. Format the output as an HTML component . Dont give me the whole boiler plate with styles and everything just refer to the example and generate similar tags with everything required.Do not include \`\`\`html or \`\`\` tags at the start or end of the response.
 
   Ensure the Output:
+  - Strictly adhere to the Data given to you do not hallucinate things at all regarding the data present only the anonymized Data thats given to you is the data that is present so if you take any other value it will mess up the whole response.
+  - Add more sections yourself that highlight how good the company may be etc. just do not add facts or numbers that are not present in the Data rest add all possible sections.
   - Does not use excessive <br> tags.
   - Sizes the logo appropriately.
   - You can add sections like Next Steps , Why we are better , Strategy,Dissemination,Project Activity, Methodology and Outcomes,Abstract/Summary etc. on a non specific manner to make the proposal more detailed.
@@ -83,9 +85,9 @@ export async function processProposalWithAI(
   console.log("Prompt:", prompt);
 
   try {
-    const completion = await openai.chat.completions.create({
+    const completion = await groq.chat.completions.create({
       messages: [{ role: "system", content: prompt }],
-      model: "gpt-4o",
+      model: "llama-3.1-70b-versatile",
     });
 
     if (

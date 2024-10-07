@@ -6,84 +6,49 @@ import useFormStore from "../stores/formStore";
 
 const CompanyInfoForm = () => {
   const { companyInfo, setCompanyInfo } = useFormStore();
+
+  const handleInputChange = (
+    e: React.ChangeEvent<HTMLInputElement | HTMLTextAreaElement>
+  ) => {
+    const { name, value } = e.target;
+    setCompanyInfo({ ...companyInfo, [name]: value });
+  };
+
   return (
-    <div id="company-info" className="space-y-4">
-      <h3 className="text-xl font-bold">Company Information</h3>
-      <div>
-        <Label htmlFor="company-name">Name</Label>
-        <Input
-          id="company-name"
-          name="company-name"
-          value={companyInfo.name || ""}
-          onChange={(e) =>
-            setCompanyInfo({ ...companyInfo, name: e.target.value })
-          }
-        />
-      </div>
-      <div>
-        <Label htmlFor="company-address">Address</Label>
-        <Input
-          id="company-address"
-          name="company-address"
-          value={companyInfo.address || ""}
-          onChange={(e) =>
-            setCompanyInfo({ ...companyInfo, address: e.target.value })
-          }
-        />
-      </div>
-      <div>
-        <Label htmlFor="company-phone">Phone</Label>
-        <Input
-          id="company-phone"
-          name="company-phone"
-          value={companyInfo.phone || ""}
-          onChange={(e) =>
-            setCompanyInfo({ ...companyInfo, phone: e.target.value })
-          }
-        />
-      </div>
-      <div>
-        <Label htmlFor="company-email">Email</Label>
-        <Input
-          id="company-email"
-          name="company-email"
-          value={companyInfo.email || ""}
-          onChange={(e) =>
-            setCompanyInfo({ ...companyInfo, email: e.target.value })
-          }
-        />
-      </div>
-      <div>
-        <Label htmlFor="company-logo">Logo URL</Label>
-        <Input
-          id="company-logo"
-          name="company-logo"
-          value={companyInfo.logo || ""}
-          onChange={(e) =>
-            setCompanyInfo({ ...companyInfo, logo: e.target.value })
-          }
-        />
-      </div>
-      <div>
-        <Label htmlFor="company-website">Website</Label>
-        <Input
-          id="company-website"
-          name="company-website"
-          value={companyInfo.website || ""}
-          onChange={(e) =>
-            setCompanyInfo({ ...companyInfo, website: e.target.value })
-          }
-        />
-      </div>
+    <div
+      id="company-info"
+      className="space-y-6 bg-white p-6 rounded-lg shadow-md"
+    >
+      <h3 className="text-2xl font-bold text-gray-800 mb-4">
+        Company Information
+      </h3>
+      {[
+        { id: "name", label: "Name" },
+        { id: "address", label: "Address" },
+        { id: "phone", label: "Phone" },
+        { id: "email", label: "Email" },
+        { id: "logo", label: "Logo URL" },
+        { id: "website", label: "Website" },
+      ].map((field) => (
+        <div key={field.id}>
+          <Label htmlFor={`company-${field.id}`}>{field.label}</Label>
+          <Input
+            id={`company-${field.id}`}
+            name={field.id}
+            value={companyInfo[field.id as keyof typeof companyInfo] || ""}
+            onChange={handleInputChange}
+            className="w-full mt-1"
+          />
+        </div>
+      ))}
       <div>
         <Label htmlFor="company-executive-summary">Executive Summary</Label>
         <Textarea
           id="company-executive-summary"
-          name="company-executive-summary"
+          name="executiveSummary"
           value={companyInfo.executiveSummary || ""}
-          onChange={(e) =>
-            setCompanyInfo({ ...companyInfo, executiveSummary: e.target.value })
-          }
+          onChange={handleInputChange}
+          className="w-full mt-1"
         />
       </div>
     </div>

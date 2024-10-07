@@ -9,7 +9,10 @@ const TestimonialsForm = () => {
   const { testimonials, addTestimonial, updateTestimonial } = useFormStore();
 
   return (
-    <div id="testimonials" className="space-y-4">
+    <div
+      id="testimonials"
+      className="space-y-6 bg-white p-6 rounded-lg shadow-md"
+    >
       <h3 className="text-xl font-bold">Testimonials</h3>
       {testimonials.map((testimonial, index) => (
         <div key={testimonial.id} className="space-y-2">

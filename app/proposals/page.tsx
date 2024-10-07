@@ -13,6 +13,7 @@ import {
 import { Badge } from "../../components/ui/badge";
 import { Button } from "../../components/ui/button";
 import { TbFilePencil } from "react-icons/tb";
+
 interface Proposal {
   id: string;
   title: string;
@@ -47,51 +48,71 @@ export default function ProposalsPage() {
   }, []);
 
   if (isLoading) {
-    return <div>Loading...</div>;
+    return <div className="text-center text-gray-600">Loading...</div>;
   }
 
   if (error) {
-    return <div>{error}</div>;
+    return <div className="text-center text-red-500">{error}</div>;
   }
 
   return (
-    <div className="container mx-auto p-4">
-      <h1 className="text-2xl font-bold mb-4">Your Proposals</h1>
+    <div className="bg-white rounded-xl shadow-md p-6">
+      <h1 className="text-3xl font-bold mb-6 text-gray-800">Your Proposals</h1>
       {proposals.length === 0 ? (
-        <p>You haven&apos;t created any proposals yet.</p>
+        <p className="text-center text-gray-600">
+          You haven&apos;t created any proposals yet.
+        </p>
       ) : (
         <Table>
           <TableHeader>
-            <TableRow>
-              <TableHead>Proposal</TableHead>
-              <TableHead>Status</TableHead>
-              <TableHead>Created</TableHead>
-              <TableHead>
+            <TableRow className="bg-gradient-to-r from-orange-100 to-amber-100">
+              <TableHead className="font-semibold text-gray-700">
+                Proposal
+              </TableHead>
+              <TableHead className="font-semibold text-gray-700">
+                Status
+              </TableHead>
+              <TableHead className="font-semibold text-gray-700">
+                Created
+              </TableHead>
+              <TableHead className="font-semibold text-gray-700">
                 <span className="sr-only">Actions</span>
               </TableHead>
             </TableRow>
           </TableHeader>
           <TableBody>
             {proposals.map((proposal) => (
-              <TableRow key={proposal.id}>
+              <TableRow
+                key={proposal.id}
+                className="hover:bg-orange-50 transition-colors"
+              >
                 <TableCell className="font-medium">
                   <Link
                     href={`/proposals/${proposal.id}`}
-                    className="hover:underline cursor-pointer"
+                    className="text-orange-600 hover:text-orange-800 hover:underline"
                   >
                     {proposal.title}
                   </Link>
                 </TableCell>
                 <TableCell>
-                  <Badge variant="outline">Draft</Badge>
+                  <Badge
+                    variant="outline"
+                    className="bg-amber-100 text-amber-800 border-amber-300"
+                  >
+                    Draft
+                  </Badge>
                 </TableCell>
-                <TableCell>
+                <TableCell className="text-gray-600">
                   {new Date(proposal.createdAt).toLocaleString()}
                 </TableCell>
                 <TableCell>
                   <Link href={`/editor?id=${proposal.id}`}>
-                    <Button variant="ghost" size="icon">
-                      <TbFilePencil className="h-4 w-4" />
+                    <Button
+                      variant="ghost"
+                      size="icon"
+                      className="text-orange-500 hover:text-orange-700 hover:bg-orange-100"
+                    >
+                      <TbFilePencil className="h-5 w-5" />
                       <span className="sr-only">Edit</span>
                     </Button>
                   </Link>

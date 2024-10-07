@@ -8,7 +8,7 @@ const generateId = () => Math.random().toString(36).substr(2, 9);
 const ProjectsForm = () => {
   const { projects, addProject, updateProject } = useFormStore();
   return (
-    <div id="projects" className="space-y-4">
+    <div id="projects" className="space-y-6 bg-white p-6 rounded-lg shadow-md">
       <h3 className="text-xl font-bold">Projects</h3>
       {projects.map((project, index) => (
         <div key={project.id} className="space-y-2">

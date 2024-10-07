@@ -17,6 +17,7 @@ import Image from "next/image";
 import useProposalStore from "@/stores/proposalStore";
 import { AiLoading } from "@/components/AiLoading";
 import { useToast } from "./ui/use-toast";
+
 interface Template {
   id: string;
   name: string;
@@ -52,7 +53,7 @@ export default function ProposalBtn() {
       .then((data) => setTemplates(data))
       .catch((error) => console.error("Error fetching templates:", error));
 
-    fetch("/api/user-data", { method: "GET" }) // Ensure method is GET
+    fetch("/api/user-data", { method: "GET" })
       .then((response) => {
         if (!response.ok) {
           throw new Error(`Error: ${response.status}`);
@@ -70,7 +71,6 @@ export default function ProposalBtn() {
   const handleTemplateSelect = async (templateId: string) => {
     if (!proposalName.trim()) {
       toast({ title: "Please enter a proposal name" });
-
       return;
     }
 
@@ -125,15 +125,19 @@ export default function ProposalBtn() {
     <>
       <Dialog open={isOpen} onOpenChange={setIsOpen}>
         <DialogTrigger asChild>
-          <Button className="m-5">Get Started</Button>
+          <Button className="bg-gradient-to-r from-orange-500 to-red-600 hover:from-orange-600 hover:to-red-700 text-white font-semibold py-2 px-6 rounded-full shadow-md hover:shadow-lg transition duration-300">
+            Get Started
+          </Button>
         </DialogTrigger>
-        <DialogContent className="sm:max-w-[800px] max-h-[90vh] overflow-auto">
+        <DialogContent className="sm:max-w-[800px] max-h-[90vh] overflow-auto bg-gray-100">
           {isGenerating && <AiLoading />}
           {!isGenerating && (
             <>
               <DialogHeader>
-                <DialogTitle>Choose a Proposal Template</DialogTitle>
-                <DialogDescription>
+                <DialogTitle className="text-2xl font-bold text-gray-800 mb-2">
+                  Choose a Proposal Template
+                </DialogTitle>
+                <DialogDescription className="text-gray-600">
                   Enter a name for your proposal and select a template to get
                   started.
                 </DialogDescription>
@@ -142,17 +146,18 @@ export default function ProposalBtn() {
                 placeholder="Enter proposal name"
                 value={proposalName}
                 onChange={(e) => setProposalName(e.target.value)}
+                className="mb-6 border-orange-300 focus:border-orange-500 focus:ring-orange-500"
               />
-              <div className="grid grid-cols-1 gap-4 sm:grid-cols-2 md:grid-cols-3">
+              <div className="grid grid-cols-1 gap-6 sm:grid-cols-2 md:grid-cols-3">
                 {templates.map((template) => (
                   <Card
                     key={template.id}
-                    className="group cursor-pointer hover:shadow-lg"
+                    className="group cursor-pointer hover:shadow-lg transition-shadow duration-300 bg-white"
                     onClick={() => handleTemplateSelect(template.id)}
                   >
                     {template.thumbnail && (
                       <Image
-                        src={template.thumbnail} // Update with actual template.thumbnail if available
+                        src={template.thumbnail}
                         alt={`${template.name} Template`}
                         width={300}
                         height={200}
@@ -160,8 +165,10 @@ export default function ProposalBtn() {
                       />
                     )}
                     <CardContent className="p-4">
-                      <h3 className="text-lg font-semibold">{template.name}</h3>
-                      <p className="text-sm text-muted-foreground">
+                      <h3 className="text-lg font-semibold text-gray-800 mb-2">
+                        {template.name}
+                      </h3>
+                      <p className="text-sm text-gray-600">
                         {template.description}
                       </p>
                     </CardContent>

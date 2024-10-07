@@ -9,7 +9,10 @@ const TeamMembersForm = () => {
   const { teamMembers, addTeamMember, updateTeamMember } = useFormStore();
 
   return (
-    <div id="team-members" className="space-y-4">
+    <div
+      id="team-members"
+      className="space-y-6 bg-white p-6 rounded-lg shadow-md"
+    >
       <h3 className="text-xl font-bold">Team Members</h3>
       {teamMembers.map((member, index) => (
         <div key={member.id} className="space-y-2 border p-4 rounded">
