@@ -1,121 +1,94 @@
 "use client";
+import React from "react";
+import Link from "next/link";
+import { signOut } from "next-auth/react";
 import { Sheet, SheetTrigger, SheetContent } from "@/components/ui/sheet";
 import { Button } from "@/components/ui/button";
-import Link from "next/link";
 import {
   NavigationMenu,
   NavigationMenuList,
   NavigationMenuLink,
 } from "@/components/ui/navigation-menu";
-import { signOut } from "next-auth/react";
+import { TbSparkles } from "react-icons/tb";
 
 export default function Header() {
   return (
-    <header className="flex h-20 w-full shrink-0 items-center px-4 md:px-6">
-      <Link href="/" className="mr-6 lg:hidden" prefetch={false}>
-        ✨
-      </Link>
-      <Sheet>
-        <SheetTrigger asChild>
-          <Button variant="outline" size="icon" className="lg:hidden">
-            <MenuIcon className="h-6 w-6" />
-            <span className="sr-only">Toggle navigation menu</span>
-          </Button>
-        </SheetTrigger>
-        <SheetContent side="left">
-          <div className="grid gap-2 py-6">
+    <header className="bg-white ">
+      <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
+        <div className="flex justify-between items-center py-6">
+          <div className="flex items-center">
             <Link
               href="/"
-              className="flex w-full items-center py-2 text-lg font-semibold"
+              className="text-2xl flex gap-x-2 justify-center items-center font-bold text-orange-600"
               prefetch={false}
             >
-              Home
+              <div className="w-10 h-10 rounded-full bg-gradient-to-r from-orange-400 to-red-500 flex items-center justify-center text-white shadow-lg transform hover:scale-110 transition-transform duration-300">
+                <TbSparkles className="text-2xl md:text-2xl" />
+              </div>
+              BizGen AI
             </Link>
-            <Link
-              href="/user-settings"
-              className="flex w-full items-center py-2 text-lg font-semibold"
-              prefetch={false}
-            >
-              My Details
-            </Link>
-            {/* <Link
-              href="#"
-              className="flex w-full items-center py-2 text-lg font-semibold"
-              prefetch={false}
-            >
-              Services
-            </Link>
-            <Link
-              href="#"
-              className="flex w-full items-center py-2 text-lg font-semibold"
-              prefetch={false}
-            >
-              Portfolio
-            </Link>
-            <Link
-              href="#"
-              className="flex w-full items-center py-2 text-lg font-semibold"
-              prefetch={false}
-            >
-              Contact
-            </Link> */}
+            <NavigationMenu className="hidden lg:ml-10 lg:flex">
+              <NavigationMenuList>
+                <NavigationMenuLink asChild>
+                  <Link
+                    href="/"
+                    className="text-gray-700 hover:text-orange-600 px-3 py-2 rounded-md text-sm font-medium"
+                    prefetch={false}
+                  >
+                    Home
+                  </Link>
+                </NavigationMenuLink>
+                <NavigationMenuLink asChild>
+                  <Link
+                    href="/user-settings"
+                    className="text-gray-700 hover:text-orange-600 px-3 py-2 rounded-md text-sm font-medium"
+                    prefetch={false}
+                  >
+                    My Details
+                  </Link>
+                </NavigationMenuLink>
+              </NavigationMenuList>
+            </NavigationMenu>
           </div>
-        </SheetContent>
-      </Sheet>
-      <Link href="/" className="mr-6 hidden lg:flex" prefetch={false}>
-        ✨<span className="sr-only">ShadCN</span>
-      </Link>
-      <NavigationMenu className="hidden lg:flex">
-        <NavigationMenuList>
-          <NavigationMenuLink asChild>
-            <Link
-              href="/"
-              className="group inline-flex h-9 w-max items-center justify-center rounded-md bg-white px-4 py-2 text-sm font-medium transition-colors hover:bg-gray-100 hover:text-gray-900 focus:bg-gray-100 focus:text-gray-900 focus:outline-none disabled:pointer-events-none disabled:opacity-50 data-[active]:bg-gray-100/50 data-[state=open]:bg-gray-100/50 dark:bg-gray-950 dark:hover:bg-gray-800 dark:hover:text-gray-50 dark:focus:bg-gray-800 dark:focus:text-gray-50 dark:data-[active]:bg-gray-800/50 dark:data-[state=open]:bg-gray-800/50"
-              prefetch={false}
+          <div className="flex items-center">
+            <Button
+              onClick={() => signOut()}
+              className="bg-orange-100 text-orange-700 hover:bg-orange-200 hover:text-orange-800"
             >
-              Home
-            </Link>
-          </NavigationMenuLink>
-          <NavigationMenuLink asChild>
-            <Link
-              href="/user-settings"
-              className="group inline-flex h-9 w-max items-center justify-center rounded-md bg-white px-4 py-2 text-sm font-medium transition-colors hover:bg-gray-100 hover:text-gray-900 focus:bg-gray-100 focus:text-gray-900 focus:outline-none disabled:pointer-events-none disabled:opacity-50 data-[active]:bg-gray-100/50 data-[state=open]:bg-gray-100/50 dark:bg-gray-950 dark:hover:bg-gray-800 dark:hover:text-gray-50 dark:focus:bg-gray-800 dark:focus:text-gray-50 dark:data-[active]:bg-gray-800/50 dark:data-[state=open]:bg-gray-800/50"
-              prefetch={false}
-            >
-              My Details
-            </Link>
-          </NavigationMenuLink>
-          {/* <NavigationMenuLink asChild>
-            <Link
-              href="#"
-              className="group inline-flex h-9 w-max items-center justify-center rounded-md bg-white px-4 py-2 text-sm font-medium transition-colors hover:bg-gray-100 hover:text-gray-900 focus:bg-gray-100 focus:text-gray-900 focus:outline-none disabled:pointer-events-none disabled:opacity-50 data-[active]:bg-gray-100/50 data-[state=open]:bg-gray-100/50 dark:bg-gray-950 dark:hover:bg-gray-800 dark:hover:text-gray-50 dark:focus:bg-gray-800 dark:focus:text-gray-50 dark:data-[active]:bg-gray-800/50 dark:data-[state=open]:bg-gray-800/50"
-              prefetch={false}
-            >
-              Services
-            </Link>
-          </NavigationMenuLink>
-          <NavigationMenuLink asChild>
-            <Link
-              href="#"
-              className="group inline-flex h-9 w-max items-center justify-center rounded-md bg-white px-4 py-2 text-sm font-medium transition-colors hover:bg-gray-100 hover:text-gray-900 focus:bg-gray-100 focus:text-gray-900 focus:outline-none disabled:pointer-events-none disabled:opacity-50 data-[active]:bg-gray-100/50 data-[state=open]:bg-gray-100/50 dark:bg-gray-950 dark:hover:bg-gray-800 dark:hover:text-gray-50 dark:focus:bg-gray-800 dark:focus:text-gray-50 dark:data-[active]:bg-gray-800/50 dark:data-[state=open]:bg-gray-800/50"
-              prefetch={false}
-            >
-              Portfolio
-            </Link>
-          </NavigationMenuLink>
-          <NavigationMenuLink asChild>
-            <Link
-              href="#"
-              className="group inline-flex h-9 w-max items-center justify-center rounded-md bg-white px-4 py-2 text-sm font-medium transition-colors hover:bg-gray-100 hover:text-gray-900 focus:bg-gray-100 focus:text-gray-900 focus:outline-none disabled:pointer-events-none disabled:opacity-50 data-[active]:bg-gray-100/50 data-[state=open]:bg-gray-100/50 dark:bg-gray-950 dark:hover:bg-gray-800 dark:hover:text-gray-50 dark:focus:bg-gray-800 dark:focus:text-gray-50 dark:data-[active]:bg-gray-800/50 dark:data-[state=open]:bg-gray-800/50"
-              prefetch={false}
-            >
-              Contact
-            </Link>
-          </NavigationMenuLink> */}
-        </NavigationMenuList>
-      </NavigationMenu>
-      <div className="ml-auto flex gap-2">
-        <Button onClick={() => signOut()}>Logout</Button>
+              Logout
+            </Button>
+            <Sheet>
+              <SheetTrigger asChild>
+                <Button
+                  variant="outline"
+                  size="icon"
+                  className="ml-4 lg:hidden"
+                >
+                  <MenuIcon className="h-6 w-6" />
+                  <span className="sr-only">Toggle navigation menu</span>
+                </Button>
+              </SheetTrigger>
+              <SheetContent side="left">
+                <div className="grid gap-4 py-6">
+                  <Link
+                    href="/"
+                    className="text-lg font-semibold text-gray-700 hover:text-orange-600"
+                    prefetch={false}
+                  >
+                    Home
+                  </Link>
+                  <Link
+                    href="/user-settings"
+                    className="text-lg font-semibold text-gray-700 hover:text-orange-600"
+                    prefetch={false}
+                  >
+                    My Details
+                  </Link>
+                </div>
+              </SheetContent>
+            </Sheet>
+          </div>
+        </div>
       </div>
     </header>
   );

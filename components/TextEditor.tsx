@@ -210,7 +210,7 @@ export default function TextEditor() {
         onChange={(e) => setTitle(e.target.value)}
         placeholder="Proposal Title"
         required
-        className="w-full p-2 border rounded"
+        className="w-full p-3 border border-gray-300 rounded-md focus:ring-2 focus:ring-orange-500 focus:border-transparent"
       />
       <div className="editor-container">
         <ReactQuill
@@ -222,12 +222,14 @@ export default function TextEditor() {
           className="mb-12"
         />
       </div>
-      <button
-        type="submit"
-        className="px-4 py-2 bg-blue-500 text-white rounded hover:bg-blue-600"
-      >
-        {id ? "Update Proposal" : "Save Proposal"}
-      </button>
+      <div className="flex justify-end">
+        <button
+          type="submit"
+          className="bg-gradient-to-r from-orange-500 to-red-600 hover:from-orange-600 hover:to-red-700 text-white font-semibold py-3 px-8 rounded-full shadow-md hover:shadow-lg transition duration-300"
+        >
+          {id ? "Update Proposal" : "Save Proposal"}
+        </button>
+      </div>
     </form>
   );
 }

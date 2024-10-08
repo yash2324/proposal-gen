@@ -24,7 +24,7 @@ export default async function ProtectedRootLayout({
       <body className={inter.className}>
         <NextAuthSessionProvider session={session}>
           {session && <Header />}
-          <main className=" px-0  pb-4">{children}</main>
+          <main className=" px-0  pb-0">{children}</main>
           <Toaster />
         </NextAuthSessionProvider>
       </body>

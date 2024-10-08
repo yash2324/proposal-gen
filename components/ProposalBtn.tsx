@@ -129,7 +129,11 @@ export default function ProposalBtn() {
             Get Started
           </Button>
         </DialogTrigger>
-        <DialogContent className="sm:max-w-[800px] max-h-[90vh] overflow-auto bg-gray-100">
+        <DialogContent
+          className={`sm:max-w-[800px] max-h-[90vh] overflow-auto ${
+            isGenerating ? "bg-white" : "bg-gray-100"
+          }`}
+        >
           {isGenerating && <AiLoading />}
           {!isGenerating && (
             <>

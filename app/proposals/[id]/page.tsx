@@ -65,11 +65,8 @@ export default function ProposalPage() {
     <div className="container mx-auto p-4">
       <div className="grid grid-cols-2 justify-between items-center mb-4">
         <h1 className="text-2xl font-bold">{proposal.title}</h1>
-        <Button
-          variant={"secondary"}
-          className="w-1/3 ml-auto"
-          onClick={handleExportPDF}
-        >
+
+        <Button className="w-1/4 ml-auto bg-gradient-to-r from-orange-500 to-red-600 hover:from-orange-600 hover:to-red-700 text-white font-semibold py-2 px-6 rounded-full shadow-md hover:shadow-lg transition duration-300">
           Export PDF
         </Button>
       </div>
